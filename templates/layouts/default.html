@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  {% include 'includes/head.html' %}
+
+  <body>
+    {% include 'includes/nav.html' %}
+    
+    <div class="container mt-3">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
+</html>
