@@ -1,0 +1,138 @@
+{% extends "layouts/default.html" %}
+
+{% block content %}
+  <h1>Edit Team</h1>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+
+    {% if form.errors %}
+      {{ form.errors }}
+    {% endif %}
+
+    <div class="row">
+      <div class="form-group col-sm-12 col-md-4">
+        {{form.team_number.label}}
+        {{form.team_number(class="form-control", value=team_number, readonly=readonly)}}
+      </div>
+      <div class="form-group col-sm-12 col-md-4">
+        {{form.drivetrain.label}}
+        {{form.drivetrain(class="form-control", value=team.drivetrain)}}
+      </div>
+      <div class="form-group col-sm-12 col-md-4">
+        {{form.weight.label}}
+        {% if team.weight != None %}
+          {{form.weight(class="form-control", value=team.weight)}}
+        {% else %}
+          {{form.weight(class="form-control")}}
+        {% endif %}
+      </div>
+    </div>
+    <div class="form-group">
+      <h6>Hang</h6>
+      <div class="form-check form-check-inline">
+        {% if team.hang %}
+          {{form.hang(class="form-check-input", checked=checked)}}
+        {% else %}
+          {{form.hang(class="form-check-input")}}
+        {% endif %}
+
+        {{form.hang.label(class="form-check-label")}}
+      </div>
+      <div class="form-check form-check-inline">
+        {{form.balanced(class="form-check-input")}}
+        {{form.balanced.label(class="form-check-label")}}
+      </div>
+    </div>
+    <div class="form-group">
+      <h6>Scoring</h6>
+      <div class="form-check form-check-inline">
+        {% if team.score_lower %}
+          {{form.score_lower(class="form-check-input", checked=checked)}}
+        {% else %}
+          {{form.score_lower(class="form-check-input")}}
+        {% endif %}
+
+        {{form.score_lower.label(class="form-check-label")}}
+      </div>
+      <div class="form-check form-check-inline">
+        {% if team.score_outer %}
+          {{form.score_outer(class="form-check-input", checked=checked)}}
+        {% else %}
+          {{form.score_outer(class="form-check-input", checked=checked)}}
+        {% endif %}
+
+        {{form.score_outer.label(class="form-check-label")}}
+      </div>
+      <div class="form-check form-check-inline">
+        {% if team.score_inner %}
+          {{form.score_inner(class="form-check-input", checked=checked)}}
+        {% else %}
+          {{form.score_inner(class="form-check-input")}}
+        {% endif %}
+
+        {{form.score_inner.label(class="form-check-label")}}
+      </div>
+    </div>
+    <div class="form-group">
+      <h6>Control Panel</h6>
+      <div class="form-check form-check-inline">
+        {% if team.control_panel %}
+          {{form.control_panel(class="form-check-input", checked=checked)}}
+        {% else %}
+          {{form.control_panel(class="form-check-input")}}
+        {% endif %}
+
+        {{form.control_panel.label(class="form-check-label")}}
+      </div>
+    </div>
+    <div class="form-group">
+      <h6>Auto</h6>
+      <div class="form-check form-check-inline">
+        {% if team.auto_move %}
+          {{form.auto_move(class="form-check-input", checked=checked)}}
+        {% else %}
+          {{form.auto_move(class="form-check-input")}}
+        {% endif %}
+
+        {{form.auto_move.label(class="form-check-label")}}
+      </div>
+      <div class="form-check form-check-inline">
+        {% if team.auto_score_lower %}
+          {{form.auto_score_lower(class="form-check-input", checked=checked)}}
+        {% else %}
+          {{form.auto_score_lower(class="form-check-input")}}
+        {% endif %}
+
+        {{form.auto_score_lower.label(class="form-check-label")}}
+      </div>
+      <div class="form-check form-check-inline">
+        {% if team.auto_score_outer %}
+          {{form.auto_score_outer(class="form-check-input", checked=checked)}}
+        {% else %}
+          {{form.auto_score_outer(class="form-check-input")}}
+        {% endif %}
+
+        {{form.auto_score_outer.label(class="form-check-label")}}
+      </div>
+      <div class="form-check form-check-inline">
+        {% if team.auto_score_inner %}
+          {{form.auto_score_inner(class="form-check-input", checked=checked)}}
+        {% else %}
+          {{form.auto_score_inner(class="form-check-input")}}
+        {% endif %}
+        {{form.auto_score_inner.label(class="form-check-label")}}
+      </div>
+    </div>
+    <div class="form-group">
+      <h6>Notes</h6>
+      {{form.notes(class="form-control", oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'")}}
+    </div>
+    {{form.submit(class="btn btn-primary")}}
+  </form>
+
+  <script>
+    $("textarea").height( $("textarea")[0].scrollHeight);
+  </script>
+
+{% endblock %}

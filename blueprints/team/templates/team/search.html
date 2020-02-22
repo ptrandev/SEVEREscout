@@ -1,0 +1,15 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+  <h1>Team Search</h1>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+
+    {% if form.errors %}
+      {{ form.errors }}
+    {% endif %}
+    <div class="form-group">
+      {{form.team_number(class="form-control", placeholder="enter team number")}}
+    </div>
+  </form>
+{% endblock %}

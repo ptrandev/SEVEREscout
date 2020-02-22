@@ -1,0 +1,79 @@
+{% extends "layouts/default.html" %}
+
+{% block content %}
+  <h1>Team {{tba_data.team_number}} - {{tba_data.nickname}}</h1>
+
+  <ul>
+    <li>Location: {{tba_data.city}}, {{tba_data.state_prov}}, {{tba_data.country}}</li>
+    <li>Rookie Year: {{tba_data.rookie_year}}</li>
+  </ul>
+
+  <a class="btn btn-primary" href="https://www.thebluealliance.com/team/{{tba_data.team_number}}" role="button">Go To TBA Profile</a>
+  <a class="btn btn-secondary" href="{{tba_data.website}}" role="button">Visit Team Site</a>
+
+  <h2>Scouting Information</h2>
+
+  {% if db_data %}
+
+  <a class="btn btn-primary" href="{{url_for('team.edit', team_number=team_number)}}" role="button">Edit Info</a>
+
+  <h6>Basic Information</h6>
+    <ul>
+      <li>Drivetrain: {{db_data.drivetrain}}</li>
+      <li>Weight: {{db_data.weight}}</li>
+    </ul>
+
+  <h6>Hanging</h6>
+    <ul>
+      <li>Hanging: {{db_data.hang}} </li>
+      <li>Balanced: {{db_data.balanced}}</li>
+    </ul>
+
+  <h6>Scoring</h6>
+    <ul>
+      <li>Score Lower: {{db_data.score_lower}}</li>
+      <li>Score Outer: {{db_data.score_outer}}</li>
+      <li>Score Inner: {{db_data.score_inner}}</li>
+    </ul>
+
+  <h6>Control Panel</h6>
+    <ul>
+      <li>Control Panel: {{db_data.control_panel}}</li>
+    </ul>
+
+  <h6>Auto</h6>
+    <ul>
+      <li>Move: {{db_data.auto_move}}</li>
+      <li>Score Lower: {{db_data.auto_score_lower}}</li>
+      <li>Score Outer: {{db_data.auto_score_outer}}</li>
+      <li>Score Inner: {{db_data.auto_score_inner}}</li>
+    </ul>
+
+
+  <h6>Notes</h6>
+
+  {% if db_data.notes %}
+
+    <div class="card">
+      <div class="card-body">
+        <p class="card-text">
+          {% autoescape false %}
+            {{db_data.notes | replace("\n", "<br>")}}
+          {% endautoescape %}
+        </p>
+      </div>
+    </div>
+
+  {% endif %}
+
+  {% else %}
+
+  <p>Looks likes there's no scouting report for this team yet.</p>
+
+  <a class="btn btn-primary" href="{{url_for('team.add', team_number=team_number)}}" role="button">
+    Add Team Entry
+  </a>
+
+  {% endif %}
+
+{% endblock %}
