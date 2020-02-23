@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect, request
 from forms import TeamForm, TeamSearchForm
-from models import Team
+from models import TeamPit
 from app import db
 
 import os

@@ -1,0 +1,17 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+
+<h1>Match Scout</h1>
+
+{% include "includes/add_match_report_button.html" %}
+
+<br>
+
+{% for match_report in match_reports %}
+  <a href="{{url_for('qual_match_scout.match', match_number=match_report.match)}}">Match #{{match_report.match}}</a>
+{% endfor %}
+
+<div class="table-responsive">
+</div>
+
+{% endblock %}

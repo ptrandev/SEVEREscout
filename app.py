@@ -26,11 +26,11 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from blueprints.home.views import home
-from blueprints.team.views import team
+from blueprints.qual_match_scout.view import qual_match_scout
 
 app.register_blueprint(google_auth.app)
 app.register_blueprint(home)
-app.register_blueprint(team)
+app.register_blueprint(qual_match_scout, url_prefix="/match_scout")
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect
 from forms import TeamSearchForm
-from models import Team
+from models import TeamPit
 
 import google_auth
 
@@ -11,6 +11,7 @@ def index():
     if not google_auth.is_logged_in():
         return(redirect(url_for('google_auth.login')))
 
+    """
     form = TeamSearchForm()
 
     teams = Team.query.all()
@@ -34,5 +35,6 @@ def index():
             team.score.append("Outer")
         if team.auto_score_inner:
             team.score.append("Inner")
+    """
 
-    return(render_template('home/index.html', form=form, teams=teams))
+    return(render_template('home/index.html'))

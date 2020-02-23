@@ -1,0 +1,163 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+  <h1>Add Team</h1>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+
+    {% if form.errors %}
+      {{ form.errors }}
+    {% endif %}
+
+    <h5>Metadata</h5>
+
+    <div class="form-group">
+      {{form.team_number.label}}
+      {{form.team_number(class="form-control", min="0")}}
+    </div>
+
+    <div class="form-group">
+      {{form.match.label}}
+      {{form.match(class="form-control", min="0")}}
+    </div>
+
+    <div class="form-group">
+      {{form.alliance.label}}
+      {{form.alliance(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.station.label}}
+      {{form.station(class="form-control", min="1", max="3")}}
+    </div>
+
+    <h5>Auto</h5>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.auto_move(class="form-check-input")}}
+        {{form.auto_move.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.auto_collect_balls(class="form-check-input")}}
+        {{form.auto_collect_balls.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.auto_score_lower.label}}
+      {{form.auto_score_lower(class="form-control", min="0")}}
+    </div>
+
+    <div class="form-group">
+      {{form.auto_score_upper.label}}
+      {{form.auto_score_upper(class="form-control", min="0")}}
+    </div>
+
+    <h5>Teleop</h5>
+
+    <div class="form-group">
+      {{form.teleop_score_lower.label}}
+      {{form.teleop_score_lower(class="form-control", min="0")}}
+    </div>
+
+    <div class="form-group">
+      {{form.teleop_score_upper.label}}
+      {{form.teleop_score_upper(class="form-control", min="0")}}
+    </div>
+
+    <div class="form-group">
+      {{form.teleop_attempts.label}}
+      {{form.teleop_attempts(class="form-control", min="0")}}
+    </div>
+
+    <div class="form-group">
+      {{form.teleop_consistency.label}}
+      {{form.teleop_consistency(class="form-control", oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'")}}
+    </div>
+
+    <h5>Control Panel</h5>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.control_panel_rotation(class="form-check-input")}}
+        {{form.control_panel_rotation.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.control_panel_position(class="form-check-input")}}
+        {{form.control_panel_position.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <h5>Defense</h5>
+
+    <div class="form-group">
+      {{form.defense_performance.label}}
+      {{form.defense_performance(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.defense_penalities.label}}
+      {{form.defense_penalities(class="form-control", min="0")}}
+    </div>
+
+    <h5>Hang</h5>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.hang_able(class="form-check-input")}}
+        {{form.hang_able.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.hang_level(class="form-check-input")}}
+        {{form.hang_level.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.hang_active(class="form-check-input")}}
+        {{form.hang_active.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.hang_position.label}}
+      {{form.hang_position(class="form-control")}}
+    </div>
+
+    <h5>Comms</h5>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.emergency_stop(class="form-check-input")}}
+        {{form.emergency_stop.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.connection_issues.label}}
+      {{form.connection_issues(class="form-control", min="0")}}
+    </div>
+
+    <div class="form-group">
+      {{form.brownouts.label}}
+      {{form.brownouts(class="form-control", min="0")}}
+    </div>
+
+    <h5>Misc</h5>
+    
+    <div class="form-group">
+      {{form.notes.label}}
+      {{form.notes(class="form-control", oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'")}}
+    </div>
+
+    {{form.submit(class="btn btn-primary")}}
+  </form>
+
+  <script>
+    $("textarea").height( $("textarea")[0].scrollHeight);
+  </script>
+
+{% endblock %}
