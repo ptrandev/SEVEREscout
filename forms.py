@@ -48,18 +48,18 @@ class TeamPitForm(FlaskForm):
 class MatchReportForm(FlaskForm):
   # metadata
   team_number = IntegerField("Team Number", validators=([DataRequired()]))
-  match = IntegerField("Match")
+  match = IntegerField("Match", widget=NumberInput(), validators=([NumberRange(min=1)]))
   alliance = SelectField("Alliance", choices=[("Blue", "Blue"), ("Red", "Red")])
-  station = IntegerField("Station", widget=NumberInput(),validators=([NumberRange(min=1, max=3)]))
+  station = IntegerField("Station", widget=NumberInput(), validators=([NumberRange(min=1, max=3)]))
   # auto
   auto_move = BooleanField("Move")
-  auto_score_lower = IntegerField("Score Lower", widget=NumberInput())
-  auto_score_upper = IntegerField("Score Upper", widget=NumberInput())
+  auto_score_lower = IntegerField("Score Lower", widget=NumberInput(), validators=([NumberRange(min=0)]))
+  auto_score_upper = IntegerField("Score Upper", widget=NumberInput(), validators=([NumberRange(min=0)]))
   auto_collect_balls = BooleanField("Collected Balls")
   # teleop
-  teleop_score_lower = IntegerField("Score Lower", widget=NumberInput())
-  teleop_score_upper = IntegerField("Score Upper", widget=NumberInput())
-  teleop_attempts = IntegerField("Attempts", widget=NumberInput())
+  teleop_score_lower = IntegerField("Score Lower", widget=NumberInput(), validators=([NumberRange(min=0)]))
+  teleop_score_upper = IntegerField("Score Upper", widget=NumberInput(), validators=([NumberRange(min=0)]))
+  teleop_attempts = IntegerField("Attempts", widget=NumberInput(), validators=([NumberRange(min=0)]))
   teleop_consistency = TextAreaField("Consistency")
   # control panel
   control_panel_rotation = BooleanField("Rotation")
@@ -71,7 +71,7 @@ class MatchReportForm(FlaskForm):
   hang_active = BooleanField("Active")
   # defense
   defense_performance = IntegerField("Performance (1-5)", widget=NumberInput(), validators=([NumberRange(min=1, max=5)])) 
-  defense_penalities = IntegerField("Penalites", widget=NumberInput())
+  defense_penalities = IntegerField("Penalites", widget=NumberInput(), validators=([NumberRange(min=0)]))
   # comms
   connection_issues = IntegerField("Connection Issues")
   brownouts = IntegerField("Brownouts")

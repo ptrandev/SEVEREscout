@@ -55,12 +55,19 @@ class TeamPit(db.Model):
     # notes
     notes = db.Column(db.String)
 
+class Match(db.Model):
+    __tablename__ = "match"
+    id = db.Column(db.Integer, primary_key=True)
+    match = db.Column(db.Integer)
+    match_reports = db.relationship("MatchReport", backref="match", lazy=True)
+
 class MatchReport(db.Model):
     __tablename__ = "match_report"
     id = db.Column(db.Integer, primary_key=True)
+    # match relationship
+    match_id = db.Column(db.Integer, db.ForeignKey("match.id"), nullable=False)
     # metadata
     team_number = db.Column(db.Integer)
-    match = db.Column(db.Integer)
     alliance = db.Column(db.String)
     station = db.Column(db.Integer)
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())

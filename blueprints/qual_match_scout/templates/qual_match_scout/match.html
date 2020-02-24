@@ -24,7 +24,7 @@
       <li>Score Upper: {{match_report.teleop_score_upper}}</li>
       <li>Attempts: {{match_report.teleop_attempts}}</li>
       <li>Points: {{match_report.teleop_points}}</li>
-      <li>Success Rate: {{match_report.teleop_success_rate}}</li>
+      <li>Success Rate: {{(match_report.teleop_success_rate * 100) | round(1) }}%</li>
     </ul>
   {% endif %}
 {% endfor %}
