@@ -50,17 +50,16 @@ class MatchReportForm(FlaskForm):
   team_number = IntegerField("Team Number", validators=([DataRequired()]))
   match = IntegerField("Match", widget=NumberInput(), validators=([NumberRange(min=1)]))
   alliance = SelectField("Alliance", choices=[("Blue", "Blue"), ("Red", "Red")])
-  station = IntegerField("Station", widget=NumberInput(), validators=([NumberRange(min=1, max=3)]))
+  station = SelectField("Station", choices=[(1, 1), (2, 2), (3, 3)], coerce=int)
   # auto
   auto_move = BooleanField("Move")
-  auto_score_lower = IntegerField("Score Lower", widget=NumberInput(), validators=([NumberRange(min=0)]))
-  auto_score_upper = IntegerField("Score Upper", widget=NumberInput(), validators=([NumberRange(min=0)]))
+  auto_score_lower = IntegerField("Score Lower", widget=NumberInput(), validators=([NumberRange(min=0)]), default=0)
+  auto_score_upper = IntegerField("Score Upper", widget=NumberInput(), validators=([NumberRange(min=0)]), default=0)
   auto_collect_balls = BooleanField("Collected Balls")
   # teleop
-  teleop_score_lower = IntegerField("Score Lower", widget=NumberInput(), validators=([NumberRange(min=0)]))
-  teleop_score_upper = IntegerField("Score Upper", widget=NumberInput(), validators=([NumberRange(min=0)]))
-  teleop_attempts = IntegerField("Attempts", widget=NumberInput(), validators=([NumberRange(min=0)]))
-  teleop_consistency = TextAreaField("Consistency")
+  teleop_score_lower = IntegerField("Score Lower", widget=NumberInput(), validators=([NumberRange(min=0)]), default=0)
+  teleop_score_upper = IntegerField("Score Upper", widget=NumberInput(), validators=([NumberRange(min=0)]), default=0)
+  teleop_attempts = IntegerField("Attempts", widget=NumberInput(), validators=([NumberRange(min=0)]), default=0)
   # control panel
   control_panel_rotation = BooleanField("Rotation")
   control_panel_position = BooleanField("Position")
@@ -70,11 +69,11 @@ class MatchReportForm(FlaskForm):
   hang_position = SelectField("Position", choices=[("Far Left", "Far Left"), ("Left", "Left"), ("Center", "Center"), ("Right", "Right"), ("Far Right", "Far Right")])
   hang_active = BooleanField("Active")
   # defense
-  defense_performance = IntegerField("Performance (1-5)", widget=NumberInput(), validators=([NumberRange(min=1, max=5)])) 
-  defense_penalities = IntegerField("Penalites", widget=NumberInput(), validators=([NumberRange(min=0)]))
+  defense_performance = SelectField("Performance (1-5)", choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], coerce=int) 
+  defense_penalities = IntegerField("Penalites", widget=NumberInput(), validators=([NumberRange(min=0)]), default=0)
   # comms
-  connection_issues = IntegerField("Connection Issues")
-  brownouts = IntegerField("Brownouts")
+  connection_issues = BooleanField("Connection Issues")
+  brownouts = BooleanField("Brownouts")
   emergency_stop = BooleanField("Emergency Stop")
   # notes
   notes = TextAreaField("Notes")

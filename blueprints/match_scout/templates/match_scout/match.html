@@ -1,0 +1,195 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+
+<h1>Match #{{match.match}}</h1>
+
+{% include "includes/search.html" %}
+{% include "includes/add_match_report_button.html" %}
+
+<hr>
+
+<h3>Blue Alliance</h3>
+
+<div class="accordion" id="blue-alliance-data">
+{% for match_report in match.match_reports %}
+  {% if match_report.alliance == "Blue" %}
+    <div class="card">
+      <div class="card-header" id="heading-blue-alliance-team-{{match_report.station}}">
+        <h2 class="mb-0">
+          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#body-blue-alliance-team-{{match_report.station}}" aria-expanded="true" aria-controls="blueAllianceTeam{{match_report.station}}">
+            Team {{match_report.team_number}}
+          </button>
+        </h2>
+        <a class="btn btn-primary" role="button" href="{{url_for('team.profile', team_number=match_report.team_number)}}">View Team Profile</a>
+      </div>
+      <div id="body-blue-alliance-team-{{match_report.station}}" class="collapse show" aria-labelledby="blueAllianceTeam{{match_report.station}}" data-parent="#blue-alliance-data">
+        <div class="card-body">
+          <h5>Auto</h5>
+          <ul>
+            <li>Move: {{match_report.auto_move}}</li>
+            <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
+            <li>Score Lower: {{match_report.auto_score_lower}}</li>
+            <li>Score Upper: {{match_report.auto_score_upper}}</li>
+            <li>Points: {{match_report.auto_points}}</li>
+          </ul>
+
+          <h5>Teleop</h5>
+          <ul>
+            <li>Score Lower: {{match_report.teleop_score_lower}}</li>
+            <li>Score Upper: {{match_report.teleop_score_upper}}</li>
+            <li>Attempts: {{match_report.teleop_attempts}}</li>
+            <li>Points: {{match_report.teleop_points}}</li>
+            <li>Success Rate: {{(match_report.teleop_success_rate * 100) | round(2)}}%</li>
+          </ul>
+          
+          <h5>Control Panel</h5>
+          <ul>
+            <li>Rotation: {{match_report.control_panel_rotation}}</li>
+            <li>Position: {{match_report.control_panel_position}}</li>
+          </ul>
+
+          <h5>Hang</h5>
+          <ul>
+            <li>Able: {{match_report.hang_able}}</li>
+            <li>Level: {{match_report.hang_level}}</li>
+            <li>Position: {{match_report.hang_position}}</li>
+            <li>Active: {{match_report.hang_active}}</li>
+            <li>Points: {{match_report.hang_points}}</li>
+          </ul>
+
+          <h5>Defense</h5>
+          <ul>
+            <li>Performance (1-5): {{match_report.defense_performance}}</li>
+            <li>Penalties: {{match_report.defense_penalties}}</li>
+          </ul>
+
+          <h5>Comms</h5>
+          <ul>
+            <li>Connection Issues: {{match_report.connection_issues}}</li>
+            <li>Brownouts: {{match_report.brownouts}}</li>
+            <li>Emergency Stop: {{match_report.emergency_stop}}</li>
+          </ul>
+
+          <h5>Misc</h5>
+          <p class="card-text">
+            {% autoescape false %}
+              {{match_report.notes | replace("\n", "<br>")}}
+            {% endautoescape %}
+          </p>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
+</div>
+
+<h3>Red Alliance</h3>
+
+<div class="accordion" id="red-alliance-data">
+{% for match_report in match.match_reports %}
+  {% if match_report.alliance == "Red" %}
+    <div class="card">
+      <div class="card-header" id="heading-red-alliance-team-{{match_report.station}}">
+        <h2 class="mb-0">
+          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#body-red-alliance-team-{{match_report.station}}" aria-expanded="true" aria-controls="redAllianceTeam{{match_report.station}}">
+            Team {{match_report.team_number}}
+          </button>
+        </h2>
+        <a class="btn btn-primary" role="button" href="{{url_for('team.profile', team_number=match_report.team_number)}}">View Team Profile</a>
+      </div>
+      <div id="body-red-alliance-team-{{match_report.station}}" class="collapse show" aria-labelledby="redAllianceTeam{{match_report.station}}" data-parent="#red-alliance-data">
+        <div class="card-body">
+          <h5>Auto</h5>
+          <ul>
+            <li>Move: {{match_report.auto_move}}</li>
+            <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
+            <li>Score Lower: {{match_report.auto_score_lower}}</li>
+            <li>Score Upper: {{match_report.auto_score_upper}}</li>
+            <li>Points: {{match_report.auto_points}}</li>
+          </ul>
+
+          <h5>Teleop</h5>
+          <ul>
+            <li>Score Lower: {{match_report.teleop_score_lower}}</li>
+            <li>Score Upper: {{match_report.teleop_score_upper}}</li>
+            <li>Attempts: {{match_report.teleop_attempts}}</li>
+            <li>Points: {{match_report.teleop_points}}</li>
+            <li>Success Rate: {{(match_report.teleop_success_rate * 100) | round(2)}}%</li>
+          </ul>
+          
+          <h5>Control Panel</h5>
+          <ul>
+            <li>Rotation: {{match_report.control_panel_rotation}}</li>
+            <li>Position: {{match_report.control_panel_position}}</li>
+          </ul>
+
+          <h5>Hang</h5>
+          <ul>
+            <li>Able: {{match_report.hang_able}}</li>
+            <li>Level: {{match_report.hang_level}}</li>
+            <li>Position: {{match_report.hang_position}}</li>
+            <li>Active: {{match_report.hang_active}}</li>
+            <li>Points: {{match_report.hang_points}}</li>
+          </ul>
+
+          <h5>Defense</h5>
+          <ul>
+            <li>Performance (1-5): {{match_report.defense_performance}}</li>
+            <li>Penalties: {{match_report.defense_penalties}}</li>
+          </ul>
+
+          <h5>Comms</h5>
+          <ul>
+            <li>Connection Issues: {{match_report.connection_issues}}</li>
+            <li>Brownouts: {{match_report.brownouts}}</li>
+            <li>Emergency Stop: {{match_report.emergency_stop}}</li>
+          </ul>
+
+          <h5>Misc</h5>
+          <p class="card-text">
+            {% autoescape false %}
+              {{match_report.notes | replace("\n", "<br>")}}
+            {% endautoescape %}
+          </p>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
+</div>
+
+<!--
+{% for match_report in match_reports %}
+  {% if match_report.alliance == "Blue" %}
+    <h4>Team {{match_report.team_number}}</h4>
+    <span>(Station {{match_report.station}})</span>
+    
+    <h5>Auto</h5>
+    <ul>
+      <li>Move: {{match_report.auto_move}}</li>
+      <li>Score Lower: {{match_report.auto_score_lower}}</li>
+      <li>Score Upper: {{match_report.auto_score_upper}}</li>
+      <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
+      <li>Points: {{match_report.auto_points}}</li>
+    </ul>
+
+    <h5>Teleop</h5>
+    <ul>
+      <li>Score Lower: {{match_report.teleop_score_lower}}</li>
+      <li>Score Upper: {{match_report.teleop_score_upper}}</li>
+      <li>Attempts: {{match_report.teleop_attempts}}</li>
+      <li>Points: {{match_report.teleop_points}}</li>
+      <li>Success Rate: {{(match_report.teleop_success_rate * 100) | round(1) }}%</li>
+    </ul>
+  {% endif %}
+{% endfor %}
+
+<h4>Red Alliance</h4>
+{% for match_report in match_reports %}
+  {% if match_report.alliance == "Red" %}
+    <h5>Team {{match_report.team_number}}</h5>
+  {% endif %}
+{% endfor %}
+-->
+
+{% endblock %}

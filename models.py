@@ -99,8 +99,8 @@ class MatchReport(db.Model):
     defense_performance = db.Column(db.Integer)
     defense_penalties = db.Column(db.Integer)
     # comms
-    connection_issues = db.Column(db.Integer)
-    brownouts = db.Column(db.Integer)
+    connection_issues = db.Column(db.Boolean)
+    brownouts = db.Column(db.Boolean)
     emergency_stop = db.Column(db.Boolean)
     #notes
     notes = db.Column(db.String)

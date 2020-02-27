@@ -1,0 +1,116 @@
+{% extends "layouts/default.html" %}
+
+{% block content %}
+
+{% include "includes/search.html" %}
+{% include "includes/add_match_report_button.html" %}
+
+<h1>Team {{team_number}} - {{tba_data.nickname}} </h1>
+
+<ul>
+  <li>Location: {{tba_data.city}}, {{tba_data.state_prov}}, {{tba_data.country}}</li>
+  <li>Rookie Year: {{tba_data.rookie_year}}</li>
+</ul>
+
+<a class="btn btn-primary" href="https://www.thebluealliance.com/team/{{tba_data.team_number}}" role="button">Go To TBA Profile</a>
+<a class="btn btn-secondary" href="{{tba_data.website}}" role="button">Visit Team Site</a>
+
+<h3>Team Statistics</h3>
+
+{% if team_statistics %}
+
+<ul>
+  <li>Number of Matches: {{team_statistics.num_matches}}</li>
+  <li>Average Auto Points Per Match: {{team_statistics.auto_points_avg}}</li>
+  <li>Average Teleop Points Per Match: {{team_statistics.teleop_points_avg}}</li>
+  <li>Average Teleop Lower Scores Per Match: {{team_statistics.teleop_score_lower_avg}}</li>
+  <li>Average Teleop Upper Scores Per Match: {{team_statistics.teleop_score_upper_avg}}</li>
+  <li>Teleop Success Rate: {{team_statistics.teleop_success_rate * 100}}%</li>
+  <li>Average Control Panel Points Per Match: {{team_statistics.control_panel_points_avg}}</li>
+  <li>Average Hang Points Per Match: {{team_statistics.hang_points_avg}}</li>
+  <li>Defensive Penalties: {{team_statistics.defense_penalties}}</li>
+  <li>Connection Issues: {{team_statistics.connection_issues}}</li>
+  <li>Brownouts: {{team_statistics.brownouts}}</li>
+  <li>Emergency Stops: {{team_statistics.emergency_stops}}</li>
+</ul>
+{% else %}
+
+<p>There is no data on this team.</p>
+
+{% endif %}
+
+<h3>Matches</h3>
+
+{% if match_reports %}
+    <div class="row">
+      <div class="col">
+        {% for match_report in match_reports | reverse %}
+        <div class="card">
+          <h4 class="card-header">Match {{match_report.match.match}}</h4>
+          <div class="card-body">
+              <h5>Auto</h5>
+              <ul>
+                <li>Move: {{match_report.auto_move}}</li>
+                <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
+                <li>Score Lower: {{match_report.auto_score_lower}}</li>
+                <li>Score Upper: {{match_report.auto_score_upper}}</li>
+                <li>Points: {{match_report.auto_points}}</li>
+              </ul>
+
+              <h5>Teleop</h5>
+              <ul>
+                <li>Score Lower: {{match_report.teleop_score_lower}}</li>
+                <li>Score Upper: {{match_report.teleop_score_upper}}</li>
+                <li>Attempts: {{match_report.teleop_attempts}}</li>
+                <li>Points: {{match_report.teleop_points}}</li>
+                <li>Success Rate: {{(match_report.teleop_success_rate * 100) | round(2)}}%</li>
+              </ul>
+              
+              <h5>Control Panel</h5>
+              <ul>
+                <li>Rotation: {{match_report.control_panel_rotation}}</li>
+                <li>Position: {{match_report.control_panel_position}}</li>
+              </ul>
+
+              <h5>Hang</h5>
+              <ul>
+                <li>Able: {{match_report.hang_able}}</li>
+                <li>Level: {{match_report.hang_level}}</li>
+                <li>Position: {{match_report.hang_position}}</li>
+                <li>Active: {{match_report.hang_active}}</li>
+                <li>Points: {{match_report.hang_points}}</li>
+              </ul>
+
+              <h5>Defense</h5>
+              <ul>
+                <li>Performance (1-5): {{match_report.defense_performance}}</li>
+                <li>Penalties: {{match_report.defense_penalties}}</li>
+              </ul>
+
+              <h5>Comms</h5>
+              <ul>
+                <li>Connection Issues: {{match_report.connection_issues}}</li>
+                <li>Brownouts: {{match_report.brownouts}}</li>
+                <li>Emergency Stop: {{match_report.emergency_stop}}</li>
+              </ul>
+
+              <h5>Misc</h5>
+              <p class="card-text">
+                {% autoescape false %}
+                  {{match_report.notes | replace("\n", "<br>")}}
+                {% endautoescape %}
+              </p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+{% else %}
+
+<p>Looks likes there's no scouting report for this team yet.</p>
+
+{% include "includes/add_match_report_button.html" %}
+
+{% endif %}
+
+{% endblock %}

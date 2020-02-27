@@ -9,11 +9,15 @@
       {{ form.errors }}
     {% endif %}
 
-    <h5>Metadata</h5>
+    <h4>Metadata</h4>
 
     <div class="form-group">
       {{form.team_number.label}}
-      {{form.team_number(class="form-control", min="0")}}
+      {% if team_number %}
+        {{form.team_number(class="form-control", min="0", value=team_number)}}
+      {% else %}
+        {{form.team_number(class="form-control", min="0")}}
+      {% endif %}
     </div>
 
     <div class="form-group">
@@ -31,7 +35,7 @@
       {{form.station(class="form-control", min="1", max="3")}}
     </div>
 
-    <h5>Auto</h5>
+    <h4>Auto</h4>
 
     <div class="form-group">
       <div class="form-check form-check-inline">
@@ -47,37 +51,62 @@
 
     <div class="form-group">
       {{form.auto_score_lower.label}}
-      {{form.auto_score_lower(class="form-control", min="0")}}
+      <div class="input-group">
+        {{form.auto_score_lower(class="form-control", min="0")}}
+        <div class="input-group-append">
+          <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+          <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
     </div>
 
     <div class="form-group">
       {{form.auto_score_upper.label}}
-      {{form.auto_score_upper(class="form-control", min="0")}}
+      <div class="input-group">
+        {{form.auto_score_upper(class="form-control", min="0")}}
+        <div class="input-group-append">
+          <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+          <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
     </div>
 
-    <h5>Teleop</h5>
+    <h4>Teleop</h4>
 
     <div class="form-group">
       {{form.teleop_score_lower.label}}
-      {{form.teleop_score_lower(class="form-control", min="0")}}
+      <div class="input-group">
+        {{form.teleop_score_lower(class="form-control", min="0")}}
+        <div class="input-group-append">
+          <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+          <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
     </div>
 
     <div class="form-group">
       {{form.teleop_score_upper.label}}
+      <div class="input-group">
       {{form.teleop_score_upper(class="form-control", min="0")}}
+      <div class="input-group-append">
+        <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+        <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+      </div>
+      </div>
     </div>
 
     <div class="form-group">
       {{form.teleop_attempts.label}}
-      {{form.teleop_attempts(class="form-control", min="0")}}
+      <div class="input-group">
+        {{form.teleop_attempts(class="form-control", min="0")}}
+        <div class="input-group-append">
+          <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+          <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
     </div>
 
-    <div class="form-group">
-      {{form.teleop_consistency.label}}
-      {{form.teleop_consistency(class="form-control", oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'")}}
-    </div>
-
-    <h5>Control Panel</h5>
+    <h4>Control Panel</h4>
 
     <div class="form-group">
       <div class="form-check form-check-inline">
@@ -91,7 +120,7 @@
       </div>
     </div>
 
-    <h5>Defense</h5>
+    <h4>Defense</h4>
 
     <div class="form-group">
       {{form.defense_performance.label}}
@@ -100,10 +129,16 @@
 
     <div class="form-group">
       {{form.defense_penalities.label}}
+      <div class="input-group">
       {{form.defense_penalities(class="form-control", min="0")}}
+      <div class="input-group-append">
+        <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+        <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+      </div>
+      </div>
     </div>
 
-    <h5>Hang</h5>
+    <h4>Hang</h4>
 
     <div class="form-group">
       <div class="form-check form-check-inline">
@@ -127,26 +162,24 @@
       {{form.hang_position(class="form-control")}}
     </div>
 
-    <h5>Comms</h5>
+    <h4>Comms</h4>
 
     <div class="form-group">
       <div class="form-check form-check-inline">
         {{form.emergency_stop(class="form-check-input")}}
         {{form.emergency_stop.label(class="form-check-label")}}
       </div>
+      <div class="form-check form-check-inline">
+        {{form.connection_issues(class="form-check-input")}}
+        {{form.connection_issues.label(class="form-check-label")}}
+      </div>
+      <div class="form-check form-check-inline">
+        {{form.brownouts(class="form-check-input")}}
+        {{form.brownouts.label(class="form-check-label")}}
+      </div>
     </div>
 
-    <div class="form-group">
-      {{form.connection_issues.label}}
-      {{form.connection_issues(class="form-control", min="0")}}
-    </div>
-
-    <div class="form-group">
-      {{form.brownouts.label}}
-      {{form.brownouts(class="form-control", min="0")}}
-    </div>
-
-    <h5>Misc</h5>
+    <h4>Misc</h4>
     
     <div class="form-group">
       {{form.notes.label}}
@@ -157,7 +190,20 @@
   </form>
 
   <script>
-    $("textarea").height( $("textarea")[0].scrollHeight);
+    $("textarea").height($("textarea")[0].scrollHeight);
+
+    document.querySelectorAll('.btn-minus').forEach(item => {
+      item.addEventListener('click', event => {
+        item.parentNode.parentNode.querySelector('input[type=number]').stepDown()
+      })
+    })
+
+    document.querySelectorAll('.btn-plus').forEach(item => {
+      item.addEventListener('click', event => {
+        item.parentNode.parentNode.querySelector('input[type=number]').stepUp()
+      })
+    })
+
   </script>
 
 {% endblock %}

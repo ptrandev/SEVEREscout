@@ -1,5 +1,5 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect, request
-from forms import MatchReportForm
+from forms import MatchReportForm, TeamSearchForm
 from models import MatchReport, Match
 from app import db
 
@@ -7,27 +7,33 @@ import os
 import requests
 import google_auth
 
-qual_match_scout = Blueprint("qual_match_scout", __name__, template_folder="templates")
+match_scout = Blueprint("match_scout", __name__, template_folder="templates")
 
-@qual_match_scout.route("/")
+@match_scout.route("/")
 def all_matches():
   # check if logged in w/ google
   if not google_auth.is_logged_in():
     return(redirect(url_for("google_auth.login")))
-  
+
+  form = TeamSearchForm()
   matches = Match.query.join(MatchReport).all()
 
-  return(render_template("qual_match_scout/all_matches.html", matches=matches))
+  return(render_template("match_scout/all_matches.html", matches=matches, form=form))
 
-@qual_match_scout.route("/match/<int:match_number>", methods=["GET", "POST"])
+@match_scout.route("/match/<int:match_number>", methods=["GET", "POST"])
 def match(match_number):
+  # check if logged in w/ google
+  if not google_auth.is_logged_in():
+    return(redirect(url_for("google_auth.login")))
 
-  match_reports = MatchReport.query.filter_by(match=match_number).all()
+  form = TeamSearchForm()
+  match = Match.query.filter_by(match=match_number).join(MatchReport).first()
 
-  return(render_template("qual_match_scout/match.html", match_reports=match_reports))
+  return(render_template("match_scout/match.html", match=match, form=form))
 
-@qual_match_scout.route("/add_match_report", methods=["GET","POST"])
-def add_match_report():
+@match_scout.route("/add_match_report", defaults={"team_number": None}, methods=["GET", "POST"])
+@match_scout.route("/add_match_report/<int:team_number>", methods=["GET","POST"])
+def add_match_report(team_number):
   # check if logged in w/ google
   if not google_auth.is_logged_in():
     return(redirect(url_for("google_auth.login")))
@@ -109,6 +115,6 @@ def add_match_report():
     db.session.add(team)
     db.session.commit()
 
-    return(redirect(url_for("qual_match_scout.add_match_report")))
+    return(redirect(url_for("match_scout.add_match_report")))
 
-  return(render_template("qual_match_scout/add_match_report.html", form=form))
+  return(render_template("match_scout/add_match_report.html", form=form, team_number=team_number))

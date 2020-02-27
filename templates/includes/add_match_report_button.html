@@ -1,1 +1,5 @@
-<a class="btn btn-primary" role="button" href="{{url_for('qual_match_scout.add_match_report')}}">Add Match Report</a>
+{% if team_number %}
+<a class="btn btn-primary" role="button" href="{{url_for('match_scout.add_match_report', team_number=team_number)}}">Add Match Report</a>
+{% else %}
+<a class="btn btn-primary" role="button" href="{{url_for('match_scout.add_match_report')}}">Add Match Report</a>
+{% endif %}
