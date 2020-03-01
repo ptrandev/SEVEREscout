@@ -1,19 +1,24 @@
 from app import db
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.postgresql import ARRAY
 
-class TeamPit(db.Model):
-    __tablename__ = "team_pit"
+class PitReport(db.Model):
+    __tablename__ = "pit_report"
     id = db.Column(db.Integer, primary_key=True)
     # metadata
     team_number = db.Column(db.Integer)
+    event = db.Column(db.String)
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
-    created_by = db.Column(db.Integer)
+    created_by = db.Column(db.String)
     # drivetrain
     drivetrain_type = db.Column(db.String)
-    wheel_type = db.Column(db.String)
+    drivetrain_type_other = db.Column(db.String)
+    wheel_type = db.Column((ARRAY(db.String)))
+    wheel_type_other = db.Column(db.String)
     wheel_number = db.Column(db.Integer)
-    motor_type = db.Column(db.String)
+    motor_type = db.Column((ARRAY(db.String)))
+    motor_type_other = db.Column(db.String)
     motor_number = db.Column(db.String)
     drivetrain_notes = db.Column(db.String)
     # physical characteristics
@@ -24,17 +29,18 @@ class TeamPit(db.Model):
     speed = db.Column(db.Float)
     # auto
     auto_move = db.Column(db.Boolean)
-    auto_score_lower = db.Column(db.Boolean)
+    auto_score_bottom = db.Column(db.Boolean)
     auto_score_outer = db.Column(db.Boolean)
     auto_score_inner = db.Column(db.Boolean)
     auto_collect_balls = db.Column(db.Boolean)
     auto_consistency = db.Column(db.Integer)
     auto_prefered_position = db.Column(db.String)
     # teleop
-    teleop_score_lower = db.Column(db.Boolean)
+    teleop_score_bottom = db.Column(db.Boolean)
     teleop_score_outer = db.Column(db.Boolean)
     teleop_score_inner = db.Column(db.Boolean)
     teleop_consistency = db.Column(db.Integer)
+    teleop_ball_capacity = db.Column(db.Integer)
     teleop_prefered_position = db.Column(db.String)
     # control panel
     control_panel_rotation = db.Column(db.Boolean)
@@ -42,16 +48,14 @@ class TeamPit(db.Model):
     # hang
     hang_able = db.Column(db.Boolean)
     hang_level = db.Column(db.Boolean)
-    hang_prefered_position = db.Column(db.String)
+    hang_prefered_position = db.Column((ARRAY(db.String)))
     hang_consistency = db.Column(db.Integer)
     hang_time = db.Column(db.Float)
     hang_active = db.Column(db.Boolean)
     # personnel
-    personnel_honest = db.Column(db.Integer)
-    personnel_answer = db.Column(db.Integer)
+    personnel_honesty = db.Column(db.Integer)
+    personnel_answering = db.Column(db.Integer)
     personnel_notes = db.Column(db.String)
-    # event
-    event = db.Column(db.String)
     # notes
     notes = db.Column(db.String)
 
@@ -59,6 +63,7 @@ class Match(db.Model):
     __tablename__ = "match"
     id = db.Column(db.Integer, primary_key=True)
     match = db.Column(db.Integer)
+    event = db.Column(db.String)
     match_reports = db.relationship("MatchReport", backref="match", lazy=True)
 
 class MatchReport(db.Model):
@@ -75,12 +80,12 @@ class MatchReport(db.Model):
     created_by = db.Column(db.String)
     # auto
     auto_move = db.Column(db.Boolean)
-    auto_score_lower = db.Column(db.Integer)
+    auto_score_bottom = db.Column(db.Integer)
     auto_score_upper = db.Column(db.Integer)
     auto_collect_balls = db.Column(db.Boolean)
     auto_points = db.Column(db.Integer)
     # teleop
-    teleop_score_lower = db.Column(db.Integer)
+    teleop_score_bottom = db.Column(db.Integer)
     teleop_score_upper = db.Column(db.Integer)
     teleop_points = db.Column(db.Integer)
     teleop_attempts = db.Column (db.Integer)
@@ -104,6 +109,13 @@ class MatchReport(db.Model):
     emergency_stop = db.Column(db.Boolean)
     #notes
     notes = db.Column(db.String)
+
+class Bookmark(db.Model):
+    __tablename__ = "bookmark"
+    id = db.Column(db.Integer, primary_key=True)
+    team_number = db.Column(db.Integer)
+    created_by = db.Column(db.String)
+    time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
 """
 class TeamPit(db.Model):
@@ -188,7 +200,7 @@ class Auto(db.Model):
     __tablename__ = "auto"
     id = db.Column(db.Integer, primary_key=True)
     move = db.Column(db.Boolean)
-    score_lower = db.Column(db.Boolean)
+    score_bottom = db.Column(db.Boolean)
     score_outer = db.Column(db.Boolean)
     score_inner = db.Column(db.Boolean)
     collect_balls = db.Column(db.Boolean)
@@ -203,7 +215,7 @@ class Auto(db.Model):
 class Teleop(db.Model):
     __tablename__ = "teleop"
     id = db.Column(db.Integer, primary_key=True)
-    score_lower = db.Column(db.Boolean)
+    score_bottom = db.Column(db.Boolean)
     score_outer = db.Column(db.Boolean)
     score_inner = db.Column(db.Boolean)
     consistency = db.Column(db.Integer)
@@ -285,7 +297,7 @@ class AutoPoints(db.Model):
     __tablename__ = "auto_points"
     id = db.Column(db.Integer, primary_key=True)
     move = db.Column(db.Boolean)
-    score_lower = db.Column(db.Integer)
+    score_bottom = db.Column(db.Integer)
     score_upper = db.Column(db.Integer)
     collect_balls = db.Column(db.Boolean)
     points = db.Column(db.Integer)
@@ -293,7 +305,7 @@ class AutoPoints(db.Model):
 class TeleopPoints(db.Model):
     __tablename__ = "auto_points"
     id = db.Column(db.Integer, primary_key=True)
-    score_lower = db.Column(db.Integer)
+    score_bottom = db.Column(db.Integer)
     score_upper = db.Column(db.Integer)
     points = db.Column(db.Integer)
     attempts = db.Column (db.Integer)

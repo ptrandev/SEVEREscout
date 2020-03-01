@@ -1,0 +1,260 @@
+{% extends "layouts/default.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+  <h1>Add Pit Report</h1>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+
+    {% if form.errors %}
+      {{ form.errors }}
+    {% endif %}
+
+    <h4>Metadata</h4>
+
+    <div class="form-group">
+      {{form.team_number.label}}
+      {{form.team_number(class="form-control", min="0")}}
+    </div>
+
+    <div class="form-group">
+      {{form.event.label}}
+      {{form.event(class="form-control")}}
+    </div>
+
+    <h4>Drivetrain</h4>
+
+    <div class="form-group">
+      {{form.drivetrain_type.label}}
+      {{form.drivetrain_type(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.drivetrain_type_other.label}}
+      {{form.drivetrain_type_other(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.wheel_type.label}}
+      {{form.wheel_type(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.wheel_type_other.label}}
+      {{form.wheel_type_other(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.wheel_number.label}}
+      {{form.wheel_number(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.motor_type.label}}
+      {{form.motor_type(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.motor_type_other.label}}
+      {{form.motor_type_other(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.motor_number.label}}
+      {{form.motor_number(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.drivetrain_notes.label}}
+      {{form.drivetrain_notes(class="form-control")}}
+    </div>
+
+    <h4>Physical Characteristics</h4>
+
+    <div class="form-group">
+      {{form.weight_unit.label}}
+      {{form.weight_unit(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.weight.label}}
+      {{form.weight(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.dimensions_unit.label}}
+      {{form.dimensions_unit(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.height.label}}
+      {{form.height(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.width.label}}
+      {{form.width(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.length.label}}
+      {{form.length(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.speed_unit.label}}
+      {{form.speed_unit(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.speed.label}}
+      {{form.speed(class="form-control")}}
+    </div>
+
+    <h4>Auto</h4>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.auto_move(class="form-check-input")}}
+        {{form.auto_move.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.auto_score_bottom(class="form-check-input")}}
+        {{form.auto_score_bottom.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.auto_score_outer(class="form-check-input")}}
+        {{form.auto_score_outer.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.auto_score_inner(class="form-check-input")}}
+        {{form.auto_score_inner.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.auto_consistency.label}}
+      {{form.auto_consistency(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.auto_prefered_position.label}}
+      {{form.auto_prefered_position(class="form-control")}}
+    </div>
+
+    <h4>Teleop</h4>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.teleop_score_bottom(class="form-check-input")}}
+        {{form.teleop_score_bottom.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.teleop_score_outer(class="form-check-input")}}
+        {{form.teleop_score_outer.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.teleop_score_inner(class="form-check-input")}}
+        {{form.teleop_score_inner.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.teleop_ball_capacity.label}}
+      {{form.teleop_ball_capacity(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.teleop_consistency.label}}
+      {{form.teleop_consistency(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.teleop_prefered_position.label}}
+      {{form.teleop_prefered_position(class="form-control")}}
+    </div>
+
+    <h4>Control Panel</h4>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.control_panel_position(class="form-check-input")}}
+        {{form.control_panel_position.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.control_panel_rotation(class="form-check-input")}}
+        {{form.control_panel_rotation.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <h4>Hang</h4>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.hang_able(class="form-check-input")}}
+        {{form.hang_able.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.hang_level(class="form-check-input")}}
+        {{form.hang_level.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.hang_active(class="form-check-input")}}
+        {{form.hang_active.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.hang_prefered_position.label}}
+      {{form.hang_prefered_position(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.hang_consistency.label}}
+      {{form.hang_consistency(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.hang_time.label}}
+      {{form.hang_time(class="form-control")}}
+    </div>
+
+    <h4>Personnel</h4>
+
+    <div class="form-group">
+      {{form.personnel_honesty.label}}
+      {{form.personnel_honesty(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.personnel_answering.label}}
+      {{form.personnel_answering(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.personnel_notes.label}}
+      {{form.personnel_notes(class="form-control")}}
+    </div>
+
+    <h4>Misc</h4>
+
+    <div class="form-group">
+      {{form.notes.label}}
+      {{form.notes(class="form-control")}}
+    </div>
+
+    {{form.submit(class="btn btn-primary")}}
+
+  </form>
+{% endblock %}

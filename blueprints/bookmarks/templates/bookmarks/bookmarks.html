@@ -1,0 +1,14 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+  <h1>Bookmarked Teams</h1>
+
+  <div class="row">
+    {% for bookmark in bookmarks %}
+    <div class="col">
+      <div class="card">
+        <h3 class="card-header">{{bookmark.team_number}}</h3>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% endblock %}

@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect, request
 from forms import TeamForm, TeamSearchForm
-from models import Match, MatchReport
+from models import Match, MatchReport, Bookmark
 from app import db
 
 import os
@@ -33,9 +33,14 @@ def profile(team_number):
     
     form = TeamSearchForm()
 
+    # get bookmark
+    bookmark = Bookmark.query.filter(Bookmark.team_number == team_number).first()
+
     # get team info from TBA API
-    response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
-    tba_data = response.json()
+    #response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+    #tba_data = response.json()
+
+    tba_data = None
 
     # get match info
     match_reports = MatchReport.query.filter_by(team_number=team_number).join(Match).all()
@@ -48,8 +53,8 @@ def profile(team_number):
             auto_points_avg = 0
             teleop_points = 0
             teleop_points_avg = 0
-            teleop_score_lower = 0
-            teleop_score_lower_avg = 0
+            teleop_score_bottom = 0
+            teleop_score_bottom_avg = 0
             teleop_score_upper = 0
             teleop_score_upper_avg = 0
             teleop_successful_attempts = 0
@@ -72,9 +77,9 @@ def profile(team_number):
         for match_report in match_reports:
             team_statistics.auto_points += match_report.auto_points
             team_statistics.teleop_points += match_report.teleop_points
-            team_statistics.teleop_score_lower += match_report.teleop_score_lower
+            team_statistics.teleop_score_bottom += match_report.teleop_score_bottom
             team_statistics.teleop_score_upper += match_report.teleop_score_upper
-            team_statistics.teleop_successful_attempts += (match_report.teleop_score_lower + match_report.teleop_score_upper)
+            team_statistics.teleop_successful_attempts += (match_report.teleop_score_bottom + match_report.teleop_score_upper)
             team_statistics.teleop_attempts += match_report.teleop_attempts
             team_statistics.control_panel_points += match_report.control_panel_points
             team_statistics.hang_points += match_report.hang_points
@@ -90,7 +95,7 @@ def profile(team_number):
         team_statistics.teleop_success_rate = round(team_statistics.teleop_successful_attempts / team_statistics.teleop_attempts, 4)
         team_statistics.auto_points_avg = round(team_statistics.auto_points / team_statistics.num_matches, 2)
         team_statistics.teleop_points_avg = round(team_statistics.teleop_points / team_statistics.num_matches, 2)
-        team_statistics.teleop_score_lower_avg = round(team_statistics.teleop_score_lower / team_statistics.num_matches, 2)
+        team_statistics.teleop_score_bottom_avg = round(team_statistics.teleop_score_bottom / team_statistics.num_matches, 2)
         team_statistics.teleop_score_upper_avg = round(team_statistics.teleop_score_upper / team_statistics.num_matches, 2)
         team_statistics.hang_points_avg = round(team_statistics.hang_points / team_statistics.num_matches, 2)
         team_statistics.control_panel_points_avg = round(team_statistics.control_panel_points / team_statistics.num_matches, 2)
@@ -99,7 +104,7 @@ def profile(team_number):
 
     return(render_template("team/profile.html", team_number=team_number,
                            match_reports=match_reports, team_statistics=team_statistics,
-                           tba_data=tba_data, form=form))
+                           tba_data=tba_data, form=form, bookmark=bookmark))
 
 """
 @team.route("/team/add", defaults={"team_number": None}, methods=["GET", "POST"])
@@ -118,12 +123,12 @@ def add(team_number):
         team.team_number = form.team_number.data
         team.hang = form.hang.data
         team.balanced = form.balanced.data
-        team.score_lower = form.score_lower.data
-        team.score_outer = form.score_lower.data
+        team.score_bottom = form.score_bottom.data
+        team.score_outer = form.score_bottom.data
         team.score_inner = form.score_inner.data
         team.control_panel = form.control_panel.data
         team.auto_move = form.auto_move.data
-        team.auto_score_lower = form.auto_score_lower.data
+        team.auto_score_bottom = form.auto_score_bottom.data
         team.auto_score_outer = form.auto_score_outer.data
         team.auto_score_inner = form.auto_score_inner.data
         team.drivetrain = form.drivetrain.data
@@ -145,7 +150,7 @@ def edit(team_number):
 
     form = TeamForm(request.form)
 
-    # get team info from fb
+    # get team info from db
     team = Team.query.filter_by(team_number=team_number).first()
 
     # if POST request, validate form and edit db entry
@@ -153,12 +158,12 @@ def edit(team_number):
         team.team_number = form.team_number.data
         team.hang = form.hang.data
         team.balanced = form.balanced.data
-        team.score_lower = form.score_lower.data
-        team.score_outer = form.score_lower.data
+        team.score_bottom = form.score_bottom.data
+        team.score_outer = form.score_bottom.data
         team.score_inner = form.score_inner.data
         team.control_panel = form.control_panel.data
         team.auto_move = form.auto_move.data
-        team.auto_score_lower = form.auto_score_lower.data
+        team.auto_score_bottom = form.auto_score_bottom.data
         team.auto_score_outer = form.auto_score_outer.data
         team.auto_score_inner = form.auto_score_inner.data
         team.drivetrain = form.drivetrain.data

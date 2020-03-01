@@ -26,13 +26,17 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from blueprints.home.views import home
+from blueprints.pit_scout.views import pit_scout
 from blueprints.match_scout.views import match_scout
 from blueprints.team.views import team
+from blueprints.bookmarks.views import bookmarks
 
 app.register_blueprint(google_auth.app)
 app.register_blueprint(home)
 app.register_blueprint(team, url_prefix="/team")
+app.register_blueprint(pit_scout, url_prefix="/pit_scout")
 app.register_blueprint(match_scout, url_prefix="/match_scout")
+app.register_blueprint(bookmarks, url_prefix="/bookmarks")
 
 if __name__ == '__main__':
     app.run(debug=True)

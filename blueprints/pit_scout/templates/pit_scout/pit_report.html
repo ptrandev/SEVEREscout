@@ -1,0 +1,103 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+
+<h1>Pit Report</h1>
+
+{% include "includes/add_pit_report.html" %}
+
+<hr>
+
+<h2>Team {{team_number}}</h2>
+
+<div class="row">
+  <div class="col">
+  {% for pit_report in pit_reports | reverse %}
+    <div class="card mb-3">
+      <div class="card-header">
+        <h5 class="mb-0">{{pit_report.event}}</h5>
+        <a class="btn btn-primary" role="button" href="{{url_for('pit_scout.edit_pit_report', pit_report_id=pit_report.id)}}">Edit Pit Report</a>
+      </div>
+      <div class="card-body">
+        <h4>Drivetrain</h4>
+        <ul>
+          <li>Drivetrain Type: {{pit_report.drivetrain_type}}</li>
+          <li>Wheel Type: {{pit_report.wheel_type}}</li>
+          <li>Wheel Number: {{pit_report.wheel_number}}</li>
+          <li>Motor Type: {{pit_report.motor_type}}</li>
+          <li>Motor Number: {{pit_report.motor_number}}</li>
+        </ul>
+        <p class="card-text">
+          {% autoescape false %}
+            {{pit_report.drivetrain_notes | replace("\n", "<br>")}}
+          {% endautoescape %}
+        </p>
+
+        <h4>Physical Characteristics</h4>
+        <ul>
+          <li>Weight: {{pit_report.weight}} Pounds</li>
+          <li>Height: {{pit_report.height}} Inches</li>
+          <li>Width: {{pit_report.width}} Inches</li>
+          <li>Length: {{pit_report.length}} Inches</li>
+          <li>Speed" {{pit_report.speed_unit}} Feet Per Second</li>
+        </ul>
+
+        <h4>Auto</h4>
+        <ul>
+          <li>Move: {{pit_report.auto_move}}</li>
+          <li>Collect Balls: {{pit_report.auto_collect_balls}}</li>
+          <li>Consistency: {{pit_report.auto_consistency}}</li>
+          <li>Score Bottom: {{pit_report.auto_score_bottom}}</li>
+          <li>Score Outer: {{pit_report.auto_score_outer}}</li>
+          <li>Score Inner: {{pit_report.auto_score_inner}}</li>
+          <li>Prefered Position: {{pit_report.auto_prefered_position}}</li>
+        </ul>
+
+        <h4>Teleop</h4>
+        <ul>
+          <li>Score Bottom: {{pit_report.teleop_score_bottom}}</li>
+          <li>Score Outer: {{pit_report.teleop_score_outer}}</li>
+          <li>Score Inner: {{pit_report.teleop_score_inner}}</li>
+          <li>Consistency: {{pit_report.teleop_consistency}}</li>
+          <li>Prefered Position: {{pit_report.teleop_prefered_position}}</li>
+        </ul>
+
+        <h4>Control Panel</h4>
+        <ul>
+          <li>Rotation: {{pit_report.control_panel_rotation}}</li>
+          <li>Position: {{pit_report.control_panel_position}}</li>
+        </ul>
+
+        <h4>Hang</h4>
+        <ul>
+          <li>Able: {{pit_report.hang_able}}</li>
+          <li>Level: {{pit_report.hang_level}}</li>
+          <li>Prefered Position: {{pit_report.hang_prefered_positon}}</li>
+          <li>Active: {{pit_report.hang_active}}</li>
+          <li>Time: {{pit_report.hang_time}} Seconds</li>
+          <li>Consistency: {{pit_report.hang_consistency}}</li>
+        </ul>
+
+        <h4>Personnel</h4>
+        <ul>
+          <li>Honesty: {{pit_report.personnel_honesty}}</li>
+          <li>Answering: {{pit_report.personnel_answering}}</li>
+        </ul>
+        <p class="card-text">
+          {% autoescape false %}
+            {{pit_report.personnel_notes | replace("\n", "<br>")}}
+          {% endautoescape %}
+        </p>
+
+        <h4>Misc</h4>
+        <p class="card-text">
+          {% autoescape false %}
+            {{pit_report.notes | replace("\n", "<br>")}}
+          {% endautoescape %}
+        </p>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

@@ -5,12 +5,24 @@
 {% include "includes/search.html" %}
 {% include "includes/add_match_report_button.html" %}
 
-<h1>Team {{team_number}} - {{tba_data.nickname}} </h1>
-
+<div class="d-flex flex-row align-items-center">
+  <form action="{{url_for('bookmarks.bookmark_team', team_number=team_number)}}" method="POST">
+    {% if bookmark %}
+    <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-bookmark"></i></button>
+    {% else %}
+    <button type="submit" class="btn btn-secondary mb-2"><i class="far fa-bookmark"></i></button>
+    {% endif %}
+  </form>
+  {% if tba_data %}
+  <h1 class="ml-3">Team {{team_number}} - {{tba_data.nickname}} </h1>
+  {% endif %}
+</div>
+{% if tba_data %}
 <ul>
   <li>Location: {{tba_data.city}}, {{tba_data.state_prov}}, {{tba_data.country}}</li>
   <li>Rookie Year: {{tba_data.rookie_year}}</li>
 </ul>
+{% endif %}
 
 <a class="btn btn-primary" href="https://www.thebluealliance.com/team/{{tba_data.team_number}}" role="button">Go To TBA Profile</a>
 <a class="btn btn-secondary" href="{{tba_data.website}}" role="button">Visit Team Site</a>
@@ -23,7 +35,7 @@
   <li>Number of Matches: {{team_statistics.num_matches}}</li>
   <li>Average Auto Points Per Match: {{team_statistics.auto_points_avg}}</li>
   <li>Average Teleop Points Per Match: {{team_statistics.teleop_points_avg}}</li>
-  <li>Average Teleop Lower Scores Per Match: {{team_statistics.teleop_score_lower_avg}}</li>
+  <li>Average Teleop Bottom Scores Per Match: {{team_statistics.teleop_score_bottom_avg}}</li>
   <li>Average Teleop Upper Scores Per Match: {{team_statistics.teleop_score_upper_avg}}</li>
   <li>Teleop Success Rate: {{team_statistics.teleop_success_rate * 100}}%</li>
   <li>Average Control Panel Points Per Match: {{team_statistics.control_panel_points_avg}}</li>
@@ -52,14 +64,14 @@
               <ul>
                 <li>Move: {{match_report.auto_move}}</li>
                 <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
-                <li>Score Lower: {{match_report.auto_score_lower}}</li>
+                <li>Score Bottom: {{match_report.auto_score_bottom}}</li>
                 <li>Score Upper: {{match_report.auto_score_upper}}</li>
                 <li>Points: {{match_report.auto_points}}</li>
               </ul>
 
               <h5>Teleop</h5>
               <ul>
-                <li>Score Lower: {{match_report.teleop_score_lower}}</li>
+                <li>Score Bottom: {{match_report.teleop_score_bottom}}</li>
                 <li>Score Upper: {{match_report.teleop_score_upper}}</li>
                 <li>Attempts: {{match_report.teleop_attempts}}</li>
                 <li>Points: {{match_report.teleop_points}}</li>

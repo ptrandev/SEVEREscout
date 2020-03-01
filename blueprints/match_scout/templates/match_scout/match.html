@@ -14,13 +14,14 @@
 {% for match_report in match.match_reports %}
   {% if match_report.alliance == "Blue" %}
     <div class="card">
-      <div class="card-header" id="heading-blue-alliance-team-{{match_report.station}}">
+      <div class="d-flex flex-row card-header" id="heading-blue-alliance-team-{{match_report.station}}">
         <h2 class="mb-0">
           <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#body-blue-alliance-team-{{match_report.station}}" aria-expanded="true" aria-controls="blueAllianceTeam{{match_report.station}}">
             Team {{match_report.team_number}}
           </button>
         </h2>
         <a class="btn btn-primary" role="button" href="{{url_for('team.profile', team_number=match_report.team_number)}}">View Team Profile</a>
+        <a class="btn btn-primary" role="button" href="{{url_for('match_scout.edit_match_report', match_report_id=match_report.id)}}">Edit Match Report</a>
       </div>
       <div id="body-blue-alliance-team-{{match_report.station}}" class="collapse show" aria-labelledby="blueAllianceTeam{{match_report.station}}" data-parent="#blue-alliance-data">
         <div class="card-body">
@@ -28,14 +29,14 @@
           <ul>
             <li>Move: {{match_report.auto_move}}</li>
             <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
-            <li>Score Lower: {{match_report.auto_score_lower}}</li>
+            <li>Score Bottom: {{match_report.auto_score_bottom}}</li>
             <li>Score Upper: {{match_report.auto_score_upper}}</li>
             <li>Points: {{match_report.auto_points}}</li>
           </ul>
 
           <h5>Teleop</h5>
           <ul>
-            <li>Score Lower: {{match_report.teleop_score_lower}}</li>
+            <li>Score Bottom: {{match_report.teleop_score_bottom}}</li>
             <li>Score Upper: {{match_report.teleop_score_upper}}</li>
             <li>Attempts: {{match_report.teleop_attempts}}</li>
             <li>Points: {{match_report.teleop_points}}</li>
@@ -96,6 +97,7 @@
           </button>
         </h2>
         <a class="btn btn-primary" role="button" href="{{url_for('team.profile', team_number=match_report.team_number)}}">View Team Profile</a>
+        <a class="btn btn-primary" role="button" href="{{url_for('match_scout.edit_match_report', match_report_id=match_report.id)}}">Edit Match Report</a>
       </div>
       <div id="body-red-alliance-team-{{match_report.station}}" class="collapse show" aria-labelledby="redAllianceTeam{{match_report.station}}" data-parent="#red-alliance-data">
         <div class="card-body">
@@ -103,14 +105,14 @@
           <ul>
             <li>Move: {{match_report.auto_move}}</li>
             <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
-            <li>Score Lower: {{match_report.auto_score_lower}}</li>
+            <li>Score Bottom: {{match_report.auto_score_bottom}}</li>
             <li>Score Upper: {{match_report.auto_score_upper}}</li>
             <li>Points: {{match_report.auto_points}}</li>
           </ul>
 
           <h5>Teleop</h5>
           <ul>
-            <li>Score Lower: {{match_report.teleop_score_lower}}</li>
+            <li>Score Bottom: {{match_report.teleop_score_bottom}}</li>
             <li>Score Upper: {{match_report.teleop_score_upper}}</li>
             <li>Attempts: {{match_report.teleop_attempts}}</li>
             <li>Points: {{match_report.teleop_points}}</li>
@@ -167,7 +169,7 @@
     <h5>Auto</h5>
     <ul>
       <li>Move: {{match_report.auto_move}}</li>
-      <li>Score Lower: {{match_report.auto_score_lower}}</li>
+      <li>Score Bottom: {{match_report.auto_score_bottom}}</li>
       <li>Score Upper: {{match_report.auto_score_upper}}</li>
       <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
       <li>Points: {{match_report.auto_points}}</li>
@@ -175,7 +177,7 @@
 
     <h5>Teleop</h5>
     <ul>
-      <li>Score Lower: {{match_report.teleop_score_lower}}</li>
+      <li>Score Bottom: {{match_report.teleop_score_loqwe}}</li>
       <li>Score Upper: {{match_report.teleop_score_upper}}</li>
       <li>Attempts: {{match_report.teleop_attempts}}</li>
       <li>Points: {{match_report.teleop_points}}</li>

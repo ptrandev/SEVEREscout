@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect
 from forms import TeamSearchForm
-from models import TeamPit
+from models import PitReport
 
 import google_auth
 
@@ -20,8 +20,8 @@ def index():
     for team in teams:
         team.score = []
 
-        if team.score_lower:
-            team.score.append("Lower")
+        if team.score_bottom:
+            team.score.append("Bottom")
         if team.score_outer:
             team.score.append("Outer")
         if team.score_inner:
@@ -29,8 +29,8 @@ def index():
 
         team.auto_score = []
 
-        if team.auto_score_lower:
-            team.score.append("Lower")
+        if team.auto_score_bottom:
+            team.score.append("Bottom")
         if team.auto_score_outer:
             team.score.append("Outer")
         if team.auto_score_inner:

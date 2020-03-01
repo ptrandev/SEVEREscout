@@ -7,13 +7,13 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link" href="#">Pit Scout</a>
+        <a class="nav-link" href="{{url_for('pit_scout.all_reports')}}">Pit Scout</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{{url_for('match_scout.all_matches')}}">Match Scout</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Bookmarked Teams</a>
+        <a class="nav-link" href="{{url_for('bookmarks.display_bookmarks')}}">Bookmarked Teams</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#">Alliance Suggestions</a>

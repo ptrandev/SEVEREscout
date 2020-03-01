@@ -1,0 +1,22 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+
+<h1>Pit Scout</h1>
+
+{% include "includes/add_pit_report.html" %}
+
+<hr>
+
+<div class="row">
+{% for pit_report in pit_reports %}
+  <div class="col-md-6 col-lg-4 mb-4">
+    <div class="card">
+      <h4 class="card-header">
+        <a href="{{url_for('pit_scout.pit_report', team_number=pit_report.team_number)}}">{{pit_report.team_number}}</a>
+      </h4>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+{% endblock %}

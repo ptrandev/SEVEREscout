@@ -47,13 +47,13 @@
     <div class="form-group">
       <h6>Scoring</h6>
       <div class="form-check form-check-inline">
-        {% if team.score_lower %}
-          {{form.score_lower(class="form-check-input", checked=checked)}}
+        {% if team.score_bottom %}
+          {{form.score_bottom(class="form-check-input", checked=checked)}}
         {% else %}
-          {{form.score_lower(class="form-check-input")}}
+          {{form.score_bottom(class="form-check-input")}}
         {% endif %}
 
-        {{form.score_lower.label(class="form-check-label")}}
+        {{form.score_bottom.label(class="form-check-label")}}
       </div>
       <div class="form-check form-check-inline">
         {% if team.score_outer %}
@@ -98,13 +98,13 @@
         {{form.auto_move.label(class="form-check-label")}}
       </div>
       <div class="form-check form-check-inline">
-        {% if team.auto_score_lower %}
-          {{form.auto_score_lower(class="form-check-input", checked=checked)}}
+        {% if team.auto_score_bottom %}
+          {{form.auto_score_bottom(class="form-check-input", checked=checked)}}
         {% else %}
-          {{form.auto_score_lower(class="form-check-input")}}
+          {{form.auto_score_bottom(class="form-check-input")}}
         {% endif %}
 
-        {{form.auto_score_lower.label(class="form-check-label")}}
+        {{form.auto_score_bottom.label(class="form-check-label")}}
       </div>
       <div class="form-check form-check-inline">
         {% if team.auto_score_outer %}
