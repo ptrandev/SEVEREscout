@@ -3,9 +3,8 @@
 {% block content %}
 
 {% include "includes/search.html" %}
-{% include "includes/add_match_report_button.html" %}
 
-<div class="d-flex flex-row align-items-center">
+<div class="d-flex flex-row align-items-center flex-wrap">
   <form action="{{url_for('bookmarks.bookmark_team', team_number=team_number)}}" method="POST">
     {% if bookmark %}
     <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-bookmark"></i></button>
@@ -13,116 +12,257 @@
     <button type="submit" class="btn btn-secondary mb-2"><i class="far fa-bookmark"></i></button>
     {% endif %}
   </form>
-  {% if tba_data %}
-  <h1 class="ml-3">Team {{team_number}} - {{tba_data.nickname}} </h1>
+  <h1 class="ml-2">{{team_number}}
+    <small class="text-muted">{{team.nickname}}</small>
+  </h1>
+</div>
+
+<div>
+  <a class="btn btn-primary ml-2" href="https://www.thebluealliance.com/team/{{team.team_number}}" target="_blank" role="button">Go To TBA Profile</a>
+  <a class="btn btn-secondary ml-2" target="_blank" href="{{team.website}}" role="button">Visit Team Site</a>
+</div>
+
+<hr>
+
+<div class="mb-3">
+  <h3>District Statistics</h3>
+
+  <ul>
+    <li>District: {{district.display_name}} District</li>
+    <li>District Ranking: {{district_ranking[0].rank}}</li>
+    <li>District Points: {{district_ranking[0].point_total}}</li>
+  </ul>
+</div>
+
+<div class="mb-3">
+  <h3>Event Statistics</h3>
+  {% for event in events | sort(attribute="start_date") %}
+    <h4>{{event.name}}
+      <small class="text-muted">Week 
+        {% if event.week == None %}
+        0
+        {% else %}
+        {{event.week + 1}}
+        {% endif %}
+      </small>
+    </h4>
+    {% if event_statuses[event.key] %}
+    <p>{{event_statuses[event.key].overall_status_str | safe}}</p>
+    <h5>Insights</h5>
+    <ul>
+      <li>OPR: {{oprs[event.key].oprs["frc" ~ team_number] | round(2)}}</li>
+      <li>DPR: {{oprs[event.key].dprs["frc" ~ team_number] | round(2)}}</li>
+      <li>CCCWM: {{oprs[event.key].ccwms["frc" ~ team_number] | round(2)}}</li>
+    </ul>
+    {% else %}
+    <p>There are no event statistics available.</p>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<div class="mb-3">
+  <h3>Team Statistics</h3>
+
+  {% if team_statistics %}
+
+  <ul>
+    <li>Number of Matches: {{team_statistics.num_matches}}</li>
+    <li>Average Auto Points Per Match: {{team_statistics.auto_points_avg}}</li>
+    <li>Average Teleop Points Per Match: {{team_statistics.teleop_points_avg}}</li>
+    <li>Average Teleop Bottom Scores Per Match: {{team_statistics.teleop_score_bottom_avg}}</li>
+    <li>Average Teleop Upper Scores Per Match: {{team_statistics.teleop_score_upper_avg}}</li>
+    <li>Teleop Success Rate: {{team_statistics.teleop_success_rate * 100}}%</li>
+    <li>Average Control Panel Points Per Match: {{team_statistics.control_panel_points_avg}}</li>
+    <li>Average Hang Points Per Match: {{team_statistics.hang_points_avg}}</li>
+    <li>Defensive Penalties: {{team_statistics.defense_penalties}}</li>
+    <li>Connection Issues: {{team_statistics.connection_issues}}</li>
+    <li>Brownouts: {{team_statistics.brownouts}}</li>
+    <li>Emergency Stops: {{team_statistics.emergency_stops}}</li>
+  </ul>
+  {% else %}
+
+  <p>There is no data on this team.</p>
+
   {% endif %}
 </div>
-{% if tba_data %}
-<ul>
-  <li>Location: {{tba_data.city}}, {{tba_data.state_prov}}, {{tba_data.country}}</li>
-  <li>Rookie Year: {{tba_data.rookie_year}}</li>
-</ul>
-{% endif %}
 
-<a class="btn btn-primary" href="https://www.thebluealliance.com/team/{{tba_data.team_number}}" role="button">Go To TBA Profile</a>
-<a class="btn btn-secondary" href="{{tba_data.website}}" role="button">Visit Team Site</a>
+<div class="mb-3">
+  <h3>Match Reports</h3>
 
-<h3>Team Statistics</h3>
+  {% if match_reports %}
+      <div class="row">
+        <div class="col">
+          {% for match_report in match_reports | reverse %}
+          <div class="card">
+            <h4 class="card-header">Match {{match_report.match.match}}</h4>
+            <div class="card-body">
+                <h5>Auto</h5>
+                <ul>
+                  <li>Move: {{match_report.auto_move}}</li>
+                  <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
+                  <li>Score Bottom: {{match_report.auto_score_bottom}}</li>
+                  <li>Score Upper: {{match_report.auto_score_upper}}</li>
+                  <li>Points: {{match_report.auto_points}}</li>
+                </ul>
 
-{% if team_statistics %}
+                <h5>Teleop</h5>
+                <ul>
+                  <li>Score Bottom: {{match_report.teleop_score_bottom}}</li>
+                  <li>Score Upper: {{match_report.teleop_score_upper}}</li>
+                  <li>Attempts: {{match_report.teleop_attempts}}</li>
+                  <li>Points: {{match_report.teleop_points}}</li>
+                  <li>Success Rate: {{(match_report.teleop_success_rate * 100) | round(2)}}%</li>
+                </ul>
+                
+                <h5>Control Panel</h5>
+                <ul>
+                  <li>Rotation: {{match_report.control_panel_rotation}}</li>
+                  <li>Position: {{match_report.control_panel_position}}</li>
+                </ul>
 
-<ul>
-  <li>Number of Matches: {{team_statistics.num_matches}}</li>
-  <li>Average Auto Points Per Match: {{team_statistics.auto_points_avg}}</li>
-  <li>Average Teleop Points Per Match: {{team_statistics.teleop_points_avg}}</li>
-  <li>Average Teleop Bottom Scores Per Match: {{team_statistics.teleop_score_bottom_avg}}</li>
-  <li>Average Teleop Upper Scores Per Match: {{team_statistics.teleop_score_upper_avg}}</li>
-  <li>Teleop Success Rate: {{team_statistics.teleop_success_rate * 100}}%</li>
-  <li>Average Control Panel Points Per Match: {{team_statistics.control_panel_points_avg}}</li>
-  <li>Average Hang Points Per Match: {{team_statistics.hang_points_avg}}</li>
-  <li>Defensive Penalties: {{team_statistics.defense_penalties}}</li>
-  <li>Connection Issues: {{team_statistics.connection_issues}}</li>
-  <li>Brownouts: {{team_statistics.brownouts}}</li>
-  <li>Emergency Stops: {{team_statistics.emergency_stops}}</li>
-</ul>
-{% else %}
+                <h5>Hang</h5>
+                <ul>
+                  <li>Able: {{match_report.hang_able}}</li>
+                  <li>Level: {{match_report.hang_level}}</li>
+                  <li>Position: {{match_report.hang_position}}</li>
+                  <li>Active: {{match_report.hang_active}}</li>
+                  <li>Points: {{match_report.hang_points}}</li>
+                </ul>
 
-<p>There is no data on this team.</p>
+                <h5>Defense</h5>
+                <ul>
+                  <li>Performance (1-5): {{match_report.defense_performance}}</li>
+                  <li>Penalties: {{match_report.defense_penalties}}</li>
+                </ul>
 
-{% endif %}
+                <h5>Comms</h5>
+                <ul>
+                  <li>Connection Issues: {{match_report.connection_issues}}</li>
+                  <li>Brownouts: {{match_report.brownouts}}</li>
+                  <li>Emergency Stop: {{match_report.emergency_stop}}</li>
+                </ul>
 
-<h3>Matches</h3>
-
-{% if match_reports %}
-    <div class="row">
-      <div class="col">
-        {% for match_report in match_reports | reverse %}
-        <div class="card">
-          <h4 class="card-header">Match {{match_report.match.match}}</h4>
-          <div class="card-body">
-              <h5>Auto</h5>
-              <ul>
-                <li>Move: {{match_report.auto_move}}</li>
-                <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
-                <li>Score Bottom: {{match_report.auto_score_bottom}}</li>
-                <li>Score Upper: {{match_report.auto_score_upper}}</li>
-                <li>Points: {{match_report.auto_points}}</li>
-              </ul>
-
-              <h5>Teleop</h5>
-              <ul>
-                <li>Score Bottom: {{match_report.teleop_score_bottom}}</li>
-                <li>Score Upper: {{match_report.teleop_score_upper}}</li>
-                <li>Attempts: {{match_report.teleop_attempts}}</li>
-                <li>Points: {{match_report.teleop_points}}</li>
-                <li>Success Rate: {{(match_report.teleop_success_rate * 100) | round(2)}}%</li>
-              </ul>
-              
-              <h5>Control Panel</h5>
-              <ul>
-                <li>Rotation: {{match_report.control_panel_rotation}}</li>
-                <li>Position: {{match_report.control_panel_position}}</li>
-              </ul>
-
-              <h5>Hang</h5>
-              <ul>
-                <li>Able: {{match_report.hang_able}}</li>
-                <li>Level: {{match_report.hang_level}}</li>
-                <li>Position: {{match_report.hang_position}}</li>
-                <li>Active: {{match_report.hang_active}}</li>
-                <li>Points: {{match_report.hang_points}}</li>
-              </ul>
-
-              <h5>Defense</h5>
-              <ul>
-                <li>Performance (1-5): {{match_report.defense_performance}}</li>
-                <li>Penalties: {{match_report.defense_penalties}}</li>
-              </ul>
-
-              <h5>Comms</h5>
-              <ul>
-                <li>Connection Issues: {{match_report.connection_issues}}</li>
-                <li>Brownouts: {{match_report.brownouts}}</li>
-                <li>Emergency Stop: {{match_report.emergency_stop}}</li>
-              </ul>
-
-              <h5>Misc</h5>
-              <p class="card-text">
-                {% autoescape false %}
-                  {{match_report.notes | replace("\n", "<br>")}}
-                {% endautoescape %}
-              </p>
+                <h5>Misc</h5>
+                <p class="card-text">
+                  {% autoescape false %}
+                    {{match_report.notes | replace("\n", "<br>")}}
+                  {% endautoescape %}
+                </p>
+            </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
+  {% else %}
+
+  <p>Looks likes there's no match reports for this team yet.</p>
+  {% include "includes/add_match_report_button.html" %}
+
+  {% endif %}
+</div>
+
+<div class="mb-3">
+  <h3>Pit Reports</h3>
+
+  {% if pit_reports %}
+
+  <div class="row">
+    <div class="col">
+      {% for pit_report in pit_reports | reverse %}
+      <div class="card mb-3">
+        <div class="card-header">
+          <h5 class="mb-0">{{pit_report.event}}</h5>
+          <a class="btn btn-primary" role="button" href="{{url_for('pit_scout.edit_pit_report', pit_report_id=pit_report.id)}}">Edit Pit Report</a>
+        </div>
+        <div class="card-body">
+          <h4>Drivetrain</h4>
+          <ul>
+            <li>Drivetrain Type: {{pit_report.drivetrain_type}}</li>
+            <li>Wheel Type: {{pit_report.wheel_type}}</li>
+            <li>Wheel Number: {{pit_report.wheel_number}}</li>
+            <li>Motor Type: {{pit_report.motor_type}}</li>
+            <li>Motor Number: {{pit_report.motor_number}}</li>
+          </ul>
+          <p class="card-text">
+            {% autoescape false %}
+              {{pit_report.drivetrain_notes | replace("\n", "<br>")}}
+            {% endautoescape %}
+          </p>
+
+          <h4>Physical Characteristics</h4>
+          <ul>
+            <li>Weight: {{pit_report.weight}} Pounds</li>
+            <li>Height: {{pit_report.height}} Inches</li>
+            <li>Width: {{pit_report.width}} Inches</li>
+            <li>Length: {{pit_report.length}} Inches</li>
+            <li>Speed" {{pit_report.speed_unit}} Feet Per Second</li>
+          </ul>
+
+          <h4>Auto</h4>
+          <ul>
+            <li>Move: {{pit_report.auto_move}}</li>
+            <li>Collect Balls: {{pit_report.auto_collect_balls}}</li>
+            <li>Consistency: {{pit_report.auto_consistency}}</li>
+            <li>Score Bottom: {{pit_report.auto_score_bottom}}</li>
+            <li>Score Outer: {{pit_report.auto_score_outer}}</li>
+            <li>Score Inner: {{pit_report.auto_score_inner}}</li>
+            <li>Prefered Position: {{pit_report.auto_prefered_position}}</li>
+          </ul>
+
+          <h4>Teleop</h4>
+          <ul>
+            <li>Score Bottom: {{pit_report.teleop_score_bottom}}</li>
+            <li>Score Outer: {{pit_report.teleop_score_outer}}</li>
+            <li>Score Inner: {{pit_report.teleop_score_inner}}</li>
+            <li>Consistency: {{pit_report.teleop_consistency}}</li>
+            <li>Prefered Position: {{pit_report.teleop_prefered_position}}</li>
+          </ul>
+
+          <h4>Control Panel</h4>
+          <ul>
+            <li>Rotation: {{pit_report.control_panel_rotation}}</li>
+            <li>Position: {{pit_report.control_panel_position}}</li>
+          </ul>
+
+          <h4>Hang</h4>
+          <ul>
+            <li>Able: {{pit_report.hang_able}}</li>
+            <li>Level: {{pit_report.hang_level}}</li>
+            <li>Prefered Position: {{pit_report.hang_prefered_positon}}</li>
+            <li>Active: {{pit_report.hang_active}}</li>
+            <li>Time: {{pit_report.hang_time}} Seconds</li>
+            <li>Consistency: {{pit_report.hang_consistency}}</li>
+          </ul>
+
+          <h4>Personnel</h4>
+          <ul>
+            <li>Honesty: {{pit_report.personnel_honesty}}</li>
+            <li>Answering: {{pit_report.personnel_answering}}</li>
+          </ul>
+          <p class="card-text">
+            {% autoescape false %}
+              {{pit_report.personnel_notes | replace("\n", "<br>")}}
+            {% endautoescape %}
+          </p>
+
+          <h4>Misc</h4>
+          <p class="card-text">
+            {% autoescape false %}
+              {{pit_report.notes | replace("\n", "<br>")}}
+            {% endautoescape %}
+          </p>
+        </div>
+      </div>
+      {% endfor %}
     </div>
-{% else %}
+  </div>
 
-<p>Looks likes there's no scouting report for this team yet.</p>
+  {% else %}
 
-{% include "includes/add_match_report_button.html" %}
+  <p>Looks like there's not pit reports for this team yet.</p>
+  {% include "includes/add_pit_report.html" %}
 
-{% endif %}
+  {% endif %}
+</div>
 
 {% endblock %}

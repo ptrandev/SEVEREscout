@@ -15,10 +15,10 @@ class PitReportForm(FlaskForm):
   # drivetrain
   drivetrain_type = SelectField("Drivetrain Type", choices=[("Kit of Parts", "Kit of Parts"), ("West Coast", "West Coast"), ("Mechanum", "Mechanum"), ("Omni", "Omni"), ("Swerve", "Swerve"), ("Tank Tread", "Tank Tread"), ("Other", "Other")])
   drivetrain_type_other = StringField("Drivetrain Type Other")
-  wheel_type = SelectMultipleField("Wheel Type", choices=[("Kit of Parts", "Kit of Parts"), ("Colson", "Colson"), ("Pneumatic", "Pneumatic"), ("Omni", "Omni"), ("Mechanum", "Mechanum"), ("Tank Tread", "Tank Tread"), ("Other", "Other")])
+  wheel_type = SelectMultipleField("Wheel Type", choices=[("Kit of Parts", "Kit of Parts"), ("Colson", "Colson"), ("Pneumatic", "Pneumatic"), ("Omni", "Omni"), ("Mechanum", "Mechanum"), ("Tank Tread", "Tank Tread"), ("Other", "Other")], coerce=str)
   wheel_type_other = StringField("Wheel Type Other")
   wheel_number = IntegerField("Wheel Number", validators=([Optional()]))
-  motor_type = SelectMultipleField("Motor Type", choices=[("Falcon", "Falcon"), ("Cim", "Cim"), ("MiniCim", "MiniCim"), ("Neo", "Neo"), ("Other", "Other")])
+  motor_type = SelectMultipleField("Motor Type", choices=[("Falcon", "Falcon"), ("Cim", "Cim"), ("MiniCim", "MiniCim"), ("Neo", "Neo"), ("Other", "Other")], coerce=str)
   motor_type_other = StringField("Motor Type Other")
   motor_number = IntegerField("Motor Number", validators=([Optional()]))
   drivetrain_notes = TextAreaField("Drivetrain Notes")
@@ -38,12 +38,7 @@ class PitReportForm(FlaskForm):
   auto_score_inner = BooleanField("Score Inner")
   auto_collect_balls = BooleanField("Collect Balls")
   auto_consistency = SelectField("Consistency", choices=[(0, "N/A"), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], coerce=int)
-  auto_prefered_position = SelectMultipleField("Prefered Position",
-                                       choices=[("Far Left", "Far Left"),
-                                                ("Left", "Left"),
-                                                ("Center", "Center"),
-                                                ("Right", "Right"),
-                                                ("Far Right", "Far Right")])
+  auto_prefered_position = SelectMultipleField("Prefered Position", choices=[("Left End", "Left End"), ("Left", "Left"), ("Center", "Center"), ("Right", "Right"), ("Right End", "Right End")], coerce=str)
   # teleop
   teleop_score_bottom = BooleanField("Score Botton")
   teleop_score_outer = BooleanField("Score Outer")
@@ -57,7 +52,7 @@ class PitReportForm(FlaskForm):
   # hang
   hang_able = BooleanField("Able")
   hang_level = BooleanField("Level")
-  hang_prefered_position = SelectMultipleField("Prefered Position", choices=[("Far Left", "Far Left"), ("Left", "Left"), ("Center", "Center"), ("Right", "Right"), ("Far Right", "Far Right")])
+  hang_prefered_position = SelectMultipleField("Prefered Position", choices=[("Left End", "Left End"), ("Left", "Left"), ("Center", "Center"), ("Right", "Right"), ("Right End", "Right End")])
   hang_consistency = SelectField("Consistency", choices=[(0,"N/A"), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], coerce=int)
   hang_time = FloatField("Time", validators=([Optional()]))
   hang_active = BooleanField("Active")
@@ -96,7 +91,7 @@ class MatchReportForm(FlaskForm):
   # hang
   hang_able = BooleanField("Able")
   hang_level = BooleanField("Level")
-  hang_position = SelectField("Position", choices=[("Far Left", "Far Left"), ("Left", "Left"), ("Center", "Center"), ("Right", "Right"), ("Far Right", "Far Right")])
+  hang_position = SelectField("Position", choices=[("Left End", "Left End"), ("Left", "Left"), ("Center", "Center"), ("Right", "Right"), ("Right End", "Right End")])
   hang_active = BooleanField("Active")
   # defense
   defense_performance = SelectField("Performance (1-5)", choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], coerce=int) 

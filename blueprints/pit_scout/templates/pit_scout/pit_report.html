@@ -1,6 +1,8 @@
 {% extends "layouts/default.html" %}
 {% block content %}
 
+{% include "includes/search.html" %}
+
 <h1>Pit Report</h1>
 
 {% include "includes/add_pit_report.html" %}
@@ -9,7 +11,9 @@
 
 <h2>Team {{team_number}}</h2>
 
-<div class="row">
+{% include "includes/team_profile_button.html" %}
+
+<div class="row mt-3">
   <div class="col">
   {% for pit_report in pit_reports | reverse %}
     <div class="card mb-3">

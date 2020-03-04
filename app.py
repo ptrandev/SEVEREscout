@@ -11,8 +11,6 @@ from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
 
-import google_auth
-
 template_folder = "templates"
 static_folder = "static"
 
@@ -24,6 +22,8 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://phillip:phillip@localhost:5432/severescout"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+import google_auth
 
 from blueprints.home.views import home
 from blueprints.pit_scout.views import pit_scout

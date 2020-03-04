@@ -1,9 +1,10 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect, request
-from forms import PitReportForm, PitPhotosForm
+from forms import PitReportForm, PitPhotosForm, TeamSearchForm
 from models import PitReport
 from app import db
 from werkzeug.utils import secure_filename
 from pathlib import Path
+import json
 
 import os
 import requests
@@ -17,8 +18,10 @@ def all_reports():
   if not google_auth.is_logged_in():
     return(redirect(url_for("google_auth.login")))
 
+  form = TeamSearchForm()
+
   pit_reports = PitReport.query.order_by(PitReport.team_number).distinct(PitReport.team_number).all()
-  return(render_template("pit_scout/all_reports.html", pit_reports=pit_reports))
+  return(render_template("pit_scout/all_reports.html", pit_reports=pit_reports, form=form))
 
 @pit_scout.route("/pit_report/<int:team_number>")
 def pit_report(team_number):
@@ -26,9 +29,11 @@ def pit_report(team_number):
   if not google_auth.is_logged_in():
     return(redirect(url_for("google_auth.login")))
 
+  form = TeamSearchForm()
+
   pit_reports = PitReport.query.filter(PitReport.team_number==team_number).all()
 
-  return(render_template("pit_scout/pit_report.html", pit_reports=pit_reports, team_number=team_number))
+  return(render_template("pit_scout/pit_report.html", pit_reports=pit_reports, team_number=team_number, form=form))
 
 @pit_scout.route("/add_pit_report", defaults={"team_number": None},
                  methods=["GET", "POST"])
@@ -96,7 +101,9 @@ def add_pit_report(team_number):
     pit_report.auto_score_inner = form.auto_score_inner.data
     if form.auto_consistency.data:
       pit_report.auto_consistency = form.auto_consistency.data
-    pit_report.auto_prefered_position = form.auto_prefered_position.data
+    pit_report.auto_prefered_position = list(map(str, form.auto_prefered_position.data))
+    
+    print(pit_report.auto_prefered_position)
 
     # teleop
     pit_report.teleop_score_bottom = form.teleop_score_bottom.data
@@ -136,7 +143,7 @@ def add_pit_report(team_number):
 
     return(redirect(url_for("pit_scout.all_reports", team_number=team_number)))
 
-  return(render_template("pit_scout/add_pit_report.html", form=form))
+  return(render_template("pit_scout/add_pit_report.html", form=form, team_number=team_number))
 
 @pit_scout.route("/add_pit_photos", defaults={"team_number": None},
                  methods=["GET", "POST"])
@@ -252,6 +259,9 @@ def edit_pit_report(pit_report_id):
 
     # notes
     pit_report.notes = form.notes.data
+
+    db.session.commit()
+    return(redirect(url_for("pit_scout.pit_report", team_number=pit_report.team_number)))
   else:
     # metadata
     form.team_number.data = pit_report.team_number
@@ -275,6 +285,17 @@ def edit_pit_report(pit_report_id):
     form.length.data = pit_report.length
     form.speed.data = pit_report.speed
 
+    # auto
+    form.auto_move.data = pit_report.auto_move
+    form.auto_score_bottom.data = pit_report.auto_score_bottom
+    form.auto_score_outer.data = pit_report.auto_score_outer
+    form.auto_score_inner.data = pit_report.auto_score_inner
+    form.auto_collect_balls.data = pit_report.auto_collect_balls
+    form.auto_consistency.data = pit_report.auto_consistency
+    form.auto_prefered_position.data = pit_report.auto_prefered_position
+    print(form.auto_prefered_position.data)
+    print(pit_report.auto_prefered_position)
+
     # teleop
     form.teleop_score_bottom.data = pit_report.teleop_score_bottom
     form.teleop_score_outer.data = pit_report.teleop_score_outer
@@ -285,7 +306,7 @@ def edit_pit_report(pit_report_id):
 
     # control panel
     form.control_panel_rotation.data = pit_report.control_panel_rotation
-    form.control_panel_positon.data = pit_report.control_panel_position
+    form.control_panel_position.data = pit_report.control_panel_position
 
     # hang
     form.hang_able.data = pit_report.hang_able
@@ -296,7 +317,11 @@ def edit_pit_report(pit_report_id):
     form.hang_active.data = pit_report.hang_active
 
     # personnel
-    
+    form.personnel_honesty.data = pit_report.personnel_honesty
+    form.personnel_answering.data = pit_report.personnel_answering
+    form.personnel_notes.data = pit_report.personnel_notes
+
     # notes
-    
+    form.notes.data = pit_report.notes
+
     return(render_template("pit_scout/edit_pit_report.html", form=form))

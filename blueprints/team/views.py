@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect, request
 from forms import TeamForm, TeamSearchForm
-from models import Match, MatchReport, Bookmark
+from models import Match, MatchReport, Bookmark, PitReport
 from app import db
 
 import os
@@ -37,10 +37,38 @@ def profile(team_number):
     bookmark = Bookmark.query.filter(Bookmark.team_number == team_number).first()
 
     # get team info from TBA API
-    #response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
-    #tba_data = response.json()
+    response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+    team = response.json()
 
-    tba_data = None
+    # get events from TBA API
+    response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}/events/2020", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+    events = response.json()
+
+    # get event statuses from TBA API
+    response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}/events/2020/statuses", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+    event_statuses = response.json()
+
+    # get OPRs (OPR, DPR, CCWM) from TBA API
+    oprs = {}
+
+    for event in event_statuses:
+        response = requests.get(f"https://www.thebluealliance.com/api/v3/event/{event}/oprs", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+        response = response.json()
+
+        oprs[event] = response
+
+    # get district from TBA API
+    response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}/districts", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+    response = response.json()
+    print(response)
+    district = response[len(response) - 1]
+    
+    print(district)
+
+    # get district ranking from TBA API
+    response = requests.get(f"https://www.thebluealliance.com/api/v3/district/{district.get('key')}/rankings", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+    response = response.json()
+    district_ranking = list(filter(lambda x:x["team_key"]==f"frc{team_number}", response))
 
     # get match info
     match_reports = MatchReport.query.filter_by(team_number=team_number).join(Match).all()
@@ -102,9 +130,13 @@ def profile(team_number):
     else:
         team_statistics = None
 
+    # get pit reports
+    pit_reports = PitReport.query.filter_by(team_number=team_number).all()
+
     return(render_template("team/profile.html", team_number=team_number,
                            match_reports=match_reports, team_statistics=team_statistics,
-                           tba_data=tba_data, form=form, bookmark=bookmark))
+                           pit_reports=pit_reports, team=team, event_statuses=event_statuses, form=form,
+                           bookmark=bookmark, events=events, district=district, district_ranking=district_ranking, oprs=oprs))
 
 """
 @team.route("/team/add", defaults={"team_number": None}, methods=["GET", "POST"])

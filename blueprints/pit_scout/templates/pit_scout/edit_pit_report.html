@@ -4,6 +4,7 @@
 {% endblock %}
 
 {% block content %}
+
   <h1>Edit Pit Report</h1>
 
   <form method="POST">
@@ -17,7 +18,11 @@
 
     <div class="form-group">
       {{form.team_number.label}}
-      {{form.team_number(class="form-control", min="0")}}
+      {% if team_number %}
+        {{form.team_number(class="form-control", min="0", value=team_number)}}
+      {% else %}
+        {{form.team_number(class="form-control", min="0")}}
+      {% endif %}
     </div>
 
     <div class="form-group">

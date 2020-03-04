@@ -201,7 +201,7 @@ def edit_match_report(match_report_id):
     form.match.data = match_report.match.match
     form.alliance.data = match_report.alliance
     form.station.data = match_report.station
-    
+
     # auto
     form.auto_move.data = match_report.auto_move
     form.auto_collect_balls.data = match_report.auto_collect_balls

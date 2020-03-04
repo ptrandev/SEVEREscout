@@ -34,7 +34,7 @@ class PitReport(db.Model):
     auto_score_inner = db.Column(db.Boolean)
     auto_collect_balls = db.Column(db.Boolean)
     auto_consistency = db.Column(db.Integer)
-    auto_prefered_position = db.Column(db.String)
+    auto_prefered_position = db.Column((ARRAY(db.String)))
     # teleop
     teleop_score_bottom = db.Column(db.Boolean)
     teleop_score_outer = db.Column(db.Boolean)
@@ -44,7 +44,7 @@ class PitReport(db.Model):
     teleop_prefered_position = db.Column(db.String)
     # control panel
     control_panel_rotation = db.Column(db.Boolean)
-    control_panel_postition = db.Column(db.Boolean)
+    control_panel_position = db.Column(db.Boolean)
     # hang
     hang_able = db.Column(db.Boolean)
     hang_level = db.Column(db.Boolean)
@@ -114,8 +114,16 @@ class Bookmark(db.Model):
     __tablename__ = "bookmark"
     id = db.Column(db.Integer, primary_key=True)
     team_number = db.Column(db.Integer)
-    created_by = db.Column(db.String)
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+class User(db.Model):
+    __tablename__ = "user"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String)
+    first_name = db.Column(db.String)
+    last_name = db.Column(db.String)
+    bookmarks = db.relationship("Bookmark", backref="user", lazy=True)
 
 """
 class TeamPit(db.Model):
