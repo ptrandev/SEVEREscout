@@ -15,14 +15,15 @@
 {% for match_report in match.match_reports %}
   {% if match_report.alliance == "Blue" %}
     <div class="card">
-      <div class="d-flex flex-row card-header" id="heading-blue-alliance-team-{{match_report.station}}">
+      <div class="d-flex flex-row flex-wrap card-header" id="heading-blue-alliance-team-{{match_report.station}}">
         <h2 class="mb-0">
           <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#body-blue-alliance-team-{{match_report.station}}" aria-expanded="true" aria-controls="blueAllianceTeam{{match_report.station}}">
-            Team {{match_report.team_number}}
+            Team {{match_report.team.team_number}}
           </button>
         </h2>
-        <a class="btn btn-primary" role="button" href="{{url_for('team.profile', team_number=match_report.team_number)}}">View Team Profile</a>
+        <a class="btn btn-primary" role="button" href="{{url_for('team.profile', team_number=match_report.team.team_number)}}">View Team Profile</a>
         <a class="btn btn-primary" role="button" href="{{url_for('match_scout.edit_match_report', match_report_id=match_report.id)}}">Edit Match Report</a>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-match-report-{{match_report.id}}">Delete Match Report</button>
       </div>
       <div id="body-blue-alliance-team-{{match_report.station}}" class="collapse show" aria-labelledby="blueAllianceTeam{{match_report.station}}" data-parent="#blue-alliance-data">
         <div class="card-body">
@@ -91,7 +92,7 @@
 {% for match_report in match.match_reports %}
   {% if match_report.alliance == "Red" %}
     <div class="card">
-      <div class="card-header" id="heading-red-alliance-team-{{match_report.station}}">
+      <div class="d-flex flex-row flex-wrap card-header" id="heading-red-alliance-team-{{match_report.station}}">
         <h2 class="mb-0">
           <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#body-red-alliance-team-{{match_report.station}}" aria-expanded="true" aria-controls="redAllianceTeam{{match_report.station}}">
             Team {{match_report.team_number}}
@@ -99,6 +100,7 @@
         </h2>
         <a class="btn btn-primary" role="button" href="{{url_for('team.profile', team_number=match_report.team_number)}}">View Team Profile</a>
         <a class="btn btn-primary" role="button" href="{{url_for('match_scout.edit_match_report', match_report_id=match_report.id)}}">Edit Match Report</a>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-match-report-{{match_report.id}}">Delete Match Report</button>
       </div>
       <div id="body-red-alliance-team-{{match_report.station}}" class="collapse show" aria-labelledby="redAllianceTeam{{match_report.station}}" data-parent="#red-alliance-data">
         <div class="card-body">
@@ -161,38 +163,28 @@
 {% endfor %}
 </div>
 
-<!--
-{% for match_report in match_reports %}
-  {% if match_report.alliance == "Blue" %}
-    <h4>Team {{match_report.team_number}}</h4>
-    <span>(Station {{match_report.station}})</span>
-    
-    <h5>Auto</h5>
-    <ul>
-      <li>Move: {{match_report.auto_move}}</li>
-      <li>Score Bottom: {{match_report.auto_score_bottom}}</li>
-      <li>Score Upper: {{match_report.auto_score_upper}}</li>
-      <li>Collect Balls: {{match_report.auto_collect_balls}}</li>
-      <li>Points: {{match_report.auto_points}}</li>
-    </ul>
-
-    <h5>Teleop</h5>
-    <ul>
-      <li>Score Bottom: {{match_report.teleop_score_loqwe}}</li>
-      <li>Score Upper: {{match_report.teleop_score_upper}}</li>
-      <li>Attempts: {{match_report.teleop_attempts}}</li>
-      <li>Points: {{match_report.teleop_points}}</li>
-      <li>Success Rate: {{(match_report.teleop_success_rate * 100) | round(1) }}%</li>
-    </ul>
-  {% endif %}
+{% for match_report in match.match_reports %}
+<div class="modal fade" id="delete-match-report-{{match_report.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete Match Report</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this match report?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <form method="POST" action="{{url_for('match_scout.delete_match_report', match_report_id=match_report.id)}}">
+          <button type="submit" class="btn btn-danger">Delete Match Report</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endfor %}
-
-<h4>Red Alliance</h4>
-{% for match_report in match_reports %}
-  {% if match_report.alliance == "Red" %}
-    <h5>Team {{match_report.team_number}}</h5>
-  {% endif %}
-{% endfor %}
--->
 
 {% endblock %}

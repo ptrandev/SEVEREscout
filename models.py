@@ -4,9 +4,10 @@ from sqlalchemy.dialects.postgresql import ARRAY
 
 class PitReport(db.Model):
     __tablename__ = "pit_report"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # team relationship
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
     # metadata
-    team_number = db.Column(db.Integer)
     event = db.Column(db.String)
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
@@ -61,18 +62,19 @@ class PitReport(db.Model):
 
 class Match(db.Model):
     __tablename__ = "match"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     match = db.Column(db.Integer)
     event = db.Column(db.String)
     match_reports = db.relationship("MatchReport", backref="match", lazy=True)
 
 class MatchReport(db.Model):
     __tablename__ = "match_report"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     # match relationship
     match_id = db.Column(db.Integer, db.ForeignKey("match.id"), nullable=False)
+    # team relationship
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
     # metadata
-    team_number = db.Column(db.Integer)
     alliance = db.Column(db.String)
     station = db.Column(db.Integer)
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
@@ -112,18 +114,71 @@ class MatchReport(db.Model):
 
 class Bookmark(db.Model):
     __tablename__ = "bookmark"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     team_number = db.Column(db.Integer)
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
 class User(db.Model):
     __tablename__ = "user"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String)
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
     bookmarks = db.relationship("Bookmark", backref="user", lazy=True)
+    alliance_suggestions = db.relationship("AllianceSuggestion", backref="user", lazy=True)
+
+class AllianceSuggestion(db.Model):
+    __tablename__ = "alliance_suggestion"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    pick_number = db.Column(db.Integer)
+    team_number = db.Column(db.Integer)
+    time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    already_selected = db.Column(db.Boolean, default=False)
+    accepted = db.Column(db.Boolean, default=False)
+    denied = db.Column(db.Boolean, default = False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+
+class Team(db.Model):
+    __tablename__ = "team"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    team_number = db.Column(db.Integer)
+    team_stats = db.relationship("TeamStats", backref="team", lazy=True)
+    alliance_suggestions = db.relationship("AllianceSuggestion", backref="team", lazy=True)
+    pit_reports = db.relationship("PitReport", backref="team", lazy=True)
+    match_reports = db.relationship("MatchReport", backref="team", lazy=True)
+
+class TeamStats(db.Model):
+    __tablename__ = "team_stats"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    auto_points = db.Column(db.Integer)
+    auto_points_avg = db.Column(db.Float)
+    teleop_points = db.Column(db.Integer)
+    teleop_points_avg = db.Column(db.Float)
+    teleop_score_bottom = db.Column(db.Integer)
+    teleop_score_bottom_avg = db.Column(db.Float)
+    teleop_score_upper = db.Column(db.Integer)
+    teleop_score_upper_avg = db.Column(db.Float)
+    teleop_successful_attempts = db.Column(db.Integer)
+    teleop_attempts = db.Column(db.Integer)
+    teleop_success_rate = db.Column(db.Float)
+    control_panel_points = db.Column(db.Integer)
+    control_panel_points_avg = db.Column(db.Float)
+    hang_points = db.Column(db.Integer)
+    hang_points_avg = db.Column(db.Float)
+    hang_able = db.Column(db.Integer)
+    hang_success_rate = db.Column(db.Float)
+    defense_penalties = db.Column(db.Integer)
+    defense_penalties_avg = db.Column(db.Float)
+    connection_issues = db.Column(db.Integer)
+    connection_issues_avg = db.Column(db.Float)
+    brownouts = db.Column(db.Integer)
+    brownouts_avg = db.Column(db.Float)
+    emergency_stops = db.Column(db.Integer)
+    emergency_stops_avg = db.Column(db.Float)
+    num_matches = db.Column(db.Integer)
 
 """
 class TeamPit(db.Model):

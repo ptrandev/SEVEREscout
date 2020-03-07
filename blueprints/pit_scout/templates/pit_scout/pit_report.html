@@ -3,7 +3,7 @@
 
 {% include "includes/search.html" %}
 
-<h1>Pit Report</h1>
+<h1>Pit Reports</h1>
 
 {% include "includes/add_pit_report.html" %}
 
@@ -20,6 +20,7 @@
       <div class="card-header">
         <h5 class="mb-0">{{pit_report.event}}</h5>
         <a class="btn btn-primary" role="button" href="{{url_for('pit_scout.edit_pit_report', pit_report_id=pit_report.id)}}">Edit Pit Report</a>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-pit-report-{{pit_report.id}}">Delete Pit Report</button>
       </div>
       <div class="card-body">
         <h4>Drivetrain</h4>
@@ -103,5 +104,29 @@
   {% endfor %}
   </div>
 </div>
+
+{% for pit_report in pit_reports %}
+<div class="modal fade" id="delete-pit-report-{{pit_report.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete Pit Report</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this pit report?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <form method="POST" action="{{url_for('pit_scout.delete_pit_report', pit_report_id=pit_report.id)}}">
+          <button type="submit" class="btn btn-danger">Delete Match Report</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 
 {% endblock %}

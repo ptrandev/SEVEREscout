@@ -12,14 +12,28 @@
     <button type="submit" class="btn btn-secondary mb-2"><i class="far fa-bookmark"></i></button>
     {% endif %}
   </form>
+  <form class="ml-2" action="{{url_for('alliance_suggestions.suggest_team', team_number=team_number, pick_number=1)}}" method="POST">
+    {% if alliance_suggestion_1 %}
+    <button type="submit" class="btn btn-primary mb-2">1 <i class="fa fa-user-minus"></i></button>
+    {% else %}
+    <button type="submit" class="btn btn-secondary mb-2">1 <i class="fa fa-user-plus"></i></button>
+    {% endif %}
+  </form>
+  <form class="ml-2" action="{{url_for('alliance_suggestions.suggest_team', team_number=team_number, pick_number=2)}}" method="POST">
+    {% if alliance_suggestion_2 %}
+    <button type="submit" class="btn btn-primary mb-2">2 <i class="fa fa-user-minus"></i></button>
+    {% else %}
+    <button type="submit" class="btn btn-secondary mb-2">2 <i class="fa fa-user-plus"></i></button>
+    {% endif %}
+  </form>
   <h1 class="ml-2">{{team_number}}
-    <small class="text-muted">{{team.nickname}}</small>
+    <small class="text-muted">{{team_info.nickname}}</small>
   </h1>
 </div>
 
 <div>
-  <a class="btn btn-primary ml-2" href="https://www.thebluealliance.com/team/{{team.team_number}}" target="_blank" role="button">Go To TBA Profile</a>
-  <a class="btn btn-secondary ml-2" target="_blank" href="{{team.website}}" role="button">Visit Team Site</a>
+  <a class="btn btn-primary ml-2" href="https://www.thebluealliance.com/team/{{team_info.team_number}}" target="_blank" role="button">Go To TBA Profile</a>
+  <a class="btn btn-secondary ml-2" target="_blank" href="{{team_info.website}}" role="button">Visit Team Site</a>
 </div>
 
 <hr>
@@ -63,21 +77,21 @@
 <div class="mb-3">
   <h3>Team Statistics</h3>
 
-  {% if team_statistics %}
+  {% if team_stats %}
 
   <ul>
-    <li>Number of Matches: {{team_statistics.num_matches}}</li>
-    <li>Average Auto Points Per Match: {{team_statistics.auto_points_avg}}</li>
-    <li>Average Teleop Points Per Match: {{team_statistics.teleop_points_avg}}</li>
-    <li>Average Teleop Bottom Scores Per Match: {{team_statistics.teleop_score_bottom_avg}}</li>
-    <li>Average Teleop Upper Scores Per Match: {{team_statistics.teleop_score_upper_avg}}</li>
-    <li>Teleop Success Rate: {{team_statistics.teleop_success_rate * 100}}%</li>
-    <li>Average Control Panel Points Per Match: {{team_statistics.control_panel_points_avg}}</li>
-    <li>Average Hang Points Per Match: {{team_statistics.hang_points_avg}}</li>
-    <li>Defensive Penalties: {{team_statistics.defense_penalties}}</li>
-    <li>Connection Issues: {{team_statistics.connection_issues}}</li>
-    <li>Brownouts: {{team_statistics.brownouts}}</li>
-    <li>Emergency Stops: {{team_statistics.emergency_stops}}</li>
+    <li>Number of Matches: {{team_stats.num_matches}}</li>
+    <li>Average Auto Points Per Match: {{team_stats.auto_points_avg}}</li>
+    <li>Average Teleop Points Per Match: {{team_stats.teleop_points_avg}}</li>
+    <li>Average Teleop Bottom Scores Per Match: {{team_stats.teleop_score_bottom_avg}}</li>
+    <li>Average Teleop Upper Scores Per Match: {{team_stats.teleop_score_upper_avg}}</li>
+    <li>Teleop Success Rate: {{team_stats.teleop_success_rate * 100}}%</li>
+    <li>Average Control Panel Points Per Match: {{team_stats.control_panel_points_avg}}</li>
+    <li>Average Hang Points Per Match: {{team_stats.hang_points_avg}}</li>
+    <li>Defensive Penalties: {{team_stats.defense_penalties}}</li>
+    <li>Connection Issues: {{team_stats.connection_issues}}</li>
+    <li>Brownouts: {{team_stats.brownouts}}</li>
+    <li>Emergency Stops: {{team_stats.emergency_stops}}</li>
   </ul>
   {% else %}
 

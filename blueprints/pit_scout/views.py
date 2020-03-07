@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect, request
 from forms import PitReportForm, PitPhotosForm, TeamSearchForm
-from models import PitReport
+from models import PitReport, Team
 from app import db
 from werkzeug.utils import secure_filename
 from pathlib import Path
@@ -20,8 +20,8 @@ def all_reports():
 
   form = TeamSearchForm()
 
-  pit_reports = PitReport.query.order_by(PitReport.team_number).distinct(PitReport.team_number).all()
-  return(render_template("pit_scout/all_reports.html", pit_reports=pit_reports, form=form))
+  teams = Team.query.order_by(Team.team_number).join(PitReport).all()
+  return(render_template("pit_scout/all_reports.html", teams=teams, form=form))
 
 @pit_scout.route("/pit_report/<int:team_number>")
 def pit_report(team_number):
@@ -31,7 +31,9 @@ def pit_report(team_number):
 
   form = TeamSearchForm()
 
-  pit_reports = PitReport.query.filter(PitReport.team_number==team_number).all()
+  team = Team.query.filter_by(team_number=team_number).first()
+
+  pit_reports = PitReport.query.filter_by(team_id=team.id).all()
 
   return(render_template("pit_scout/pit_report.html", pit_reports=pit_reports, team_number=team_number, form=form))
 
@@ -47,10 +49,10 @@ def add_pit_report(team_number):
 
   if request.method == "POST" and form.validate():
     user_info = google_auth.get_user_info()
+
     pit_report = PitReport()
 
     # metadata
-    pit_report.team_number = form.team_number.data
     pit_report.event = form.event.data
     pit_report.created_by = user_info["id"]
 
@@ -137,7 +139,17 @@ def add_pit_report(team_number):
 
     # notes
     pit_report.notes = form.notes.data
+    
+    team = Team.query.filter_by(team_number=form.team_number.data).first()
 
+    if not team:
+      team = Team(
+        team_number = form.team_number.data
+      )
+
+    team.pit_reports.append(pit_report)
+
+    db.session.add(team)
     db.session.add(pit_report)
     db.session.commit()
 
@@ -166,8 +178,9 @@ def edit_pit_report(pit_report_id):
   if not google_auth.is_logged_in():
     return(redirect(url_for("google_auth.login")))
 
-  # get pit report info
+  # get pit report info, find associated team
   pit_report = PitReport.query.filter(PitReport.id == pit_report_id).first()
+  team = Team.query.filter_by(id=pit_report.team_id).first()
 
   form = PitReportForm(request.form)
   
@@ -175,7 +188,6 @@ def edit_pit_report(pit_report_id):
     user_info = google_auth.get_user_info()
 
     # metadata
-    pit_report.team_number = form.team_number.data
     pit_report.event = form.event.data
     pit_report.created_by = user_info["id"]
 
@@ -260,11 +272,23 @@ def edit_pit_report(pit_report_id):
     # notes
     pit_report.notes = form.notes.data
 
+    # find team from form
+    team = Team.query.filter_by(team_number=form.team_number.data).first()
+
+    # if team doesn't exist, make it
+    if not team:
+      team = Team(
+        team_number = form.team_number.data
+      )
+
+    # add pit report to team
+    team.pit_reports.append(pit_report)
+
     db.session.commit()
-    return(redirect(url_for("pit_scout.pit_report", team_number=pit_report.team_number)))
+    return(redirect(url_for("pit_scout.pit_report", team_number=team.team_number)))
   else:
     # metadata
-    form.team_number.data = pit_report.team_number
+    form.team_number.data = team.team_number
     form.event.data = pit_report.event
 
     # drivetrain
@@ -325,3 +349,17 @@ def edit_pit_report(pit_report_id):
     form.notes.data = pit_report.notes
 
     return(render_template("pit_scout/edit_pit_report.html", form=form))
+
+@pit_scout.route("/delete_pit_report/<int:pit_report_id>", methods=["POST"])
+def delete_pit_report(pit_report_id):
+  # check if logged in w/ google
+  if not google_auth.is_logged_in():
+    return(redirect(url_for("google_auth.login")))
+
+  # get pit report info
+  pit_report = PitReport.query.filter(PitReport.id == pit_report_id).first()
+
+  db.session.delete(pit_report)
+  db.session.commit()
+  
+  return(redirect(url_for("pit_scout.all_reports")))

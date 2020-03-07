@@ -20,10 +20,10 @@ def display_bookmarks():
   user_info = google_auth.get_user_info()
   user = User.query.filter(User.user_id==user_info["id"]).first()
 
-  all_bookmarks = Bookmark.query.join(User).all()
+  all_bookmarks = Bookmark.query.filter(db.not_(Bookmark.user_id == user.id)).join(User).all()
   user_bookmarks = Bookmark.query.filter(Bookmark.user_id == user.id).join(User).all()
 
-  return(render_template("bookmarks/bookmarks.html", all_bookmarks=all_bookmarks, user_bookmarks=user_bookmarks, form=form))
+  return(render_template("bookmarks/display_bookmarks.html", all_bookmarks=all_bookmarks, user_bookmarks=user_bookmarks, form=form))
 
 @bookmarks.route("/bookmark_team/<int:team_number>", methods=["POST"])
 def bookmark_team(team_number):
@@ -42,8 +42,6 @@ def bookmark_team(team_number):
     db.session.commit()
   else:
     bookmark = Bookmark(team_number=team_number, user_id=user.id)
-
-    #bookmark = Bookmark(team_number=team_number, created_by="424242")
 
     db.session.add(bookmark)
     db.session.commit()

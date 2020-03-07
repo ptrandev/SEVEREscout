@@ -51,4 +51,4 @@ def index():
             team.score.append("Inner")
     """
 
-    return(render_template('home/index.html'))
+    return(redirect(url_for("stats.all_stats")))

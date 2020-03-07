@@ -10,12 +10,20 @@
 <hr>
 
 <div class="row">
-{% for pit_report in pit_reports %}
+{% for team in teams %}
   <div class="col-md-6 col-lg-4 mb-4">
     <div class="card">
       <h4 class="card-header">
-        <a href="{{url_for('pit_scout.pit_report', team_number=pit_report.team_number)}}">{{pit_report.team_number}}</a>
+        <a href="{{url_for('pit_scout.pit_report', team_number=team.team_number)}}">{{team.team_number}}</a>
       </h4>
+      <div class="card-body">
+        <h5>Reports Available</h5>
+        {% for pit_report in team.pit_reports %}
+        <ul class="mb-0">
+          <li>{{pit_report.event}}</li>
+        </ul>
+        {% endfor %}
+      </div>
     </div>
   </div>
 {% endfor %}

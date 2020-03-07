@@ -1,0 +1,85 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+
+{% include "includes/search.html" %}
+
+  <h1>Alliance Suggestions</h1>
+
+  <hr>
+
+  <h2>1st Pick</h2>
+  <div class="row">
+    {% for alliance_suggestion in alliance_suggestions_1 | sort(attribute="already_selected") | sort (attribute="accepted") %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3><a href="{{url_for('team.profile', team_number=alliance_suggestion.team_number)}}">{{alliance_suggestion.team_number}}</a></h3>
+          <p class="mb-0">{{alliance_suggestion.user.first_name}} {{alliance_suggestion.user.last_name}}</p>
+        </div>
+        <div class="d-flex flex-row justify-content-between card-body">
+          <form action="{{url_for('alliance_suggestions.team_accepted', team_number=alliance_suggestion.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+            {% if alliance_suggestion.accepted %}
+            <button type="submit" class="btn btn-success"><i class="fas fa-check"></i></button>
+            {% else %}
+            <button type="submit" class="btn btn-outline-success"><i class="fas fa-check"></i></button>
+            {% endif %}
+          </form>
+          <form action="{{url_for('alliance_suggestions.team_already_selected', team_number=alliance_suggestion.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+            {% if alliance_suggestion.already_selected %}
+            <button type="submit" class="btn btn-secondary"><i class="fas fa-lock-open"></i></button>
+            {% else %}
+            <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-lock-open"></i></button>
+            {% endif %}
+          </form>
+          <form action="{{url_for('alliance_suggestions.team_denied', team_number=alliance_suggestion.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+            {% if alliance_suggestion.denied %}
+            <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i></button>
+            {% else %}
+            <button type="submit" class="btn btn-outline-danger"><i class="fas fa-times"></i></button>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <h2>2nd Pick</h2>
+
+  <div class="row">
+    {% for alliance_suggestion in alliance_suggestions_2 | sort(attribute="already_selected") | sort (attribute="accepted") %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3><a href="{{url_for('team.profile', team_number=alliance_suggestion.team_number)}}">{{alliance_suggestion.team_number}}</a></h3>
+          <p class="mb-0">{{alliance_suggestion.user.first_name}} {{alliance_suggestion.user.last_name}}</p>
+        </div>
+        <div class="d-flex flex-row justify-content-between card-body">
+          <form action="{{url_for('alliance_suggestions.team_accepted', team_number=alliance_suggestion.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+            {% if alliance_suggestion.accepted %}
+            <button type="submit" class="btn btn-success"><i class="fas fa-check"></i></button>
+            {% else %}
+            <button type="submit" class="btn btn-outline-success"><i class="fas fa-check"></i></button>
+            {% endif %}
+          </form>
+          <form action="{{url_for('alliance_suggestions.team_already_selected', team_number=alliance_suggestion.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+            {% if alliance_suggestion.already_selected %}
+            <button type="submit" class="btn btn-secondary"><i class="fas fa-lock-open"></i></button>
+            {% else %}
+            <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-lock-open"></i></button>
+            {% endif %}
+          </form>
+          <form action="{{url_for('alliance_suggestions.team_denied', team_number=alliance_suggestion.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+            {% if alliance_suggestion.denied %}
+            <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i></button>
+            {% else %}
+            <button type="submit" class="btn btn-outline-danger"><i class="fas fa-times"></i></button>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}

@@ -19,7 +19,7 @@
           <ul>
             {% for match_report in match.match_reports %}
               {% if match_report.alliance == "Blue" %}
-                <li>{{match_report.team_number}}</li>
+                <li>{{match_report.team.team_number}}</li>
               {% endif %}
             {% endfor %}
           </ul>
@@ -27,7 +27,7 @@
           <ul>
             {% for match_report in match.match_reports %}
               {% if match_report.alliance == "Red" %}
-                <li>{{match_report.team_number}}</li>
+                <li>{{match_report.team.team_number}}</li>
               {% endif %}
             {% endfor %}
           </ul>
