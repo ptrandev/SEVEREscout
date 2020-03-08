@@ -40,37 +40,44 @@
 
 <div class="mb-3">
   <h3>District Statistics</h3>
-
+  {% if district %}
   <ul>
     <li>District: {{district.display_name}} District</li>
     <li>District Ranking: {{district_ranking[0].rank}}</li>
     <li>District Points: {{district_ranking[0].point_total}}</li>
   </ul>
+  {% else %}
+  <p>There are no district statistics available.</p>
+  {% endif %}
 </div>
 
 <div class="mb-3">
   <h3>Event Statistics</h3>
   {% for event in events | sort(attribute="start_date") %}
-    <h4>{{event.name}}
-      <small class="text-muted">Week 
-        {% if event.week == None %}
-        0
+    <div class="card mb-4">
+      <h4 class="card-header">{{event.name}}
+        <small class="text-muted">Week 
+          {% if event.week == None %}
+          0
+          {% else %}
+          {{event.week + 1}}
+          {% endif %}
+        </small>
+      </h4>
+      <div class="card-body">
+        {% if event_statuses[event.key] %}
+        <p>{{event_statuses[event.key].overall_status_str | safe}}</p>
+        <h5>Insights</h5>
+        <ul>
+          <li>OPR: {{oprs[event.key].oprs["frc" ~ team_number] | round(2)}}</li>
+          <li>DPR: {{oprs[event.key].dprs["frc" ~ team_number] | round(2)}}</li>
+          <li>CCCWM: {{oprs[event.key].ccwms["frc" ~ team_number] | round(2)}}</li>
+        </ul>
         {% else %}
-        {{event.week + 1}}
+        <p class="mb-0">There are no event statistics available.</p>
         {% endif %}
-      </small>
-    </h4>
-    {% if event_statuses[event.key] %}
-    <p>{{event_statuses[event.key].overall_status_str | safe}}</p>
-    <h5>Insights</h5>
-    <ul>
-      <li>OPR: {{oprs[event.key].oprs["frc" ~ team_number] | round(2)}}</li>
-      <li>DPR: {{oprs[event.key].dprs["frc" ~ team_number] | round(2)}}</li>
-      <li>CCCWM: {{oprs[event.key].ccwms["frc" ~ team_number] | round(2)}}</li>
-    </ul>
-    {% else %}
-    <p>There are no event statistics available.</p>
-    {% endif %}
+      </div>
+    </div>
   {% endfor %}
 </div>
 

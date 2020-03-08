@@ -37,13 +37,7 @@ def profile(team_number):
     team = Team.query.filter_by(team_number=team_number).first()
 
     # get bookmark
-    bookmark = Bookmark.query.filter(Bookmark.team_number == team.id).first()
-    
-    # get alliance suggestion 1st pick
-    alliance_suggestion_1 = AllianceSuggestion.query.filter(AllianceSuggestion.team_number == team_number, AllianceSuggestion.pick_number == 1).first()
-
-    # get alliance suggestion 2nd pick
-    alliance_suggestion_2 = AllianceSuggestion.query.filter(AllianceSuggestion.team_number == team_number, AllianceSuggestion.pick_number == 2).first()
+    bookmark = Bookmark.query.filter(Bookmark.team_number == team_number).first()
 
     # get team info from TBA API
     response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
@@ -69,24 +63,35 @@ def profile(team_number):
     # get district from TBA API
     response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}/districts", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
     response = response.json()
-    district = response[len(response) - 1]
+    if response:
+        district = response[len(response) - 1]
+    else:
+        district = None
 
     # get district ranking from TBA API
-    response = requests.get(f"https://www.thebluealliance.com/api/v3/district/{district.get('key')}/rankings", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
-    response = response.json()
-    district_ranking = list(filter(lambda x:x["team_key"]==f"frc{team_number}", response))
-
-    # get match info
-    match_reports = MatchReport.query.filter_by(team_id=team.id).join(Match).all()
-
-    # get team stats
-    if team:
-        team_stats = TeamStats.query.filter_by(team_id=team.id).first()
+    if district:
+        response = requests.get(f"https://www.thebluealliance.com/api/v3/district/{district.get('key')}/rankings", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+        response = response.json()
+        district_ranking = list(filter(lambda x:x["team_key"]==f"frc{team_number}", response))
     else:
-        team_stats = None
+        district_ranking = None
 
-    # get pit reports
-    pit_reports = PitReport.query.filter_by(team_id=team.id).all()
+    if team:
+        # get alliance suggestion 1st pick
+        alliance_suggestion_1 = AllianceSuggestion.query.filter(AllianceSuggestion.team_id == team.id, AllianceSuggestion.pick_number == 1).first()
+
+        # get alliance suggestion 2nd pick
+        alliance_suggestion_2 = AllianceSuggestion.query.filter(AllianceSuggestion.team_id == team.id, AllianceSuggestion.pick_number == 2).first()
+
+        match_reports = MatchReport.query.filter_by(team_id=team.id).join(Match).all()
+        team_stats = TeamStats.query.filter_by(team_id=team.id).first()
+        pit_reports = PitReport.query.filter_by(team_id=team.id).all()
+    else:
+        alliance_suggestion_1 = None
+        alliance_suggestion_2 = None
+        match_reports = None
+        team_stats = None
+        pit_reports = None
 
     return(render_template("team/profile.html", team_number=team_number,
                            match_reports=match_reports, team_stats=team_stats,
