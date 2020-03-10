@@ -124,10 +124,9 @@ def add_match_report(team_number):
       match.match = form.match.data
       match.event = form.event.data
 
-    match.match_reports.append(match_report)
+    match_report.match_id = match.id
 
     db.session.add(team)
-    db.session.add(match)
     db.session.add(match_report)
     db.session.commit()
 
