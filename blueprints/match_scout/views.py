@@ -109,7 +109,7 @@ def add_match_report(team_number):
     # find team from form
     team = Team.query.filter_by(team_number=form.team_number.data).first()
 
-    # if team doesn't exist, make it and add pit report to it
+    # if team doesn't exist, make it
     if not team:
       team = Team()
       team.team_number = form.team_number.data
@@ -117,8 +117,8 @@ def add_match_report(team_number):
     # add match report to team
     team.match_reports.append(match_report)
 
-    match = Match.query.filter_by(match=form.match.data).first()
-    
+    match = Match.query.filter(Match.match==form.match.data).first()
+
     if not match:
       match = Match()
       match.match = form.match.data
