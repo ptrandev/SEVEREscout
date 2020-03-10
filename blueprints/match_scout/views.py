@@ -43,7 +43,17 @@ def add_match_report(team_number):
   if request.method == "POST" and form.validate():
     user_info = google_auth.get_user_info()
 
+    match = Match.query.filter(Match.match==form.match.data).first()
+
+    if not match:
+      match = Match()
+      match.match = form.match.data
+      match.event = form.event.data
+
     match_report = MatchReport()
+
+    # match relationship
+    match_report.match_id = match.id
 
     # metadata
     match_report.alliance = form.alliance.data
@@ -116,15 +126,6 @@ def add_match_report(team_number):
 
     # add match report to team
     team.match_reports.append(match_report)
-
-    match = Match.query.filter(Match.match==form.match.data).first()
-
-    if not match:
-      match = Match()
-      match.match = form.match.data
-      match.event = form.event.data
-
-    match_report.match_id = match.id
 
     db.session.add(team)
     db.session.add(match_report)
