@@ -127,6 +127,7 @@ class User(db.Model):
     last_name = db.Column(db.String)
     bookmarks = db.relationship("Bookmark", backref="user", lazy=True)
     alliance_suggestions = db.relationship("AllianceSuggestion", backref="user", lazy=True)
+    team_photos = db.relationship("TeamPhoto", backref="user", lazy=True)
 
 class AllianceSuggestion(db.Model):
     __tablename__ = "alliance_suggestion"
@@ -148,6 +149,19 @@ class Team(db.Model):
     alliance_suggestions = db.relationship("AllianceSuggestion", backref="team", lazy=True)
     pit_reports = db.relationship("PitReport", backref="team", lazy=True)
     match_reports = db.relationship("MatchReport", backref="team", lazy=True)
+    team_photos = db.relationship("TeamPhoto", backref="team", lazy=True)
+
+class TeamPhoto(db.Model):
+    __tablename__ = "team_photo"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    team_id = db.Column(db.Integer, db.ForeignKey("team.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    url = db.Column(db.String)
+    height = db.Column(db.Integer)
+    width = db.Column(db.Integer)
+    public_id = db.Column(db.String)
+    format = db.Column(db.String)
+    version = db.Column(db.String)
 
 class TeamStats(db.Model):
     __tablename__ = "team_stats"

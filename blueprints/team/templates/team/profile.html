@@ -3,7 +3,6 @@
 {% block content %}
 
 {% include "includes/search.html" %}
-
 <div class="d-flex flex-row align-items-center flex-wrap">
   <form action="{{url_for('bookmarks.bookmark_team', team_number=team_number)}}" method="POST">
     {% if bookmark %}
@@ -37,6 +36,32 @@
 </div>
 
 <hr>
+
+<div class="mb-3">
+  <h3>Robot Photos</h3>
+
+  {% if team_photos %}
+  <div class="galleria">
+    {% for team_photo in team_photos %}
+    <a href="https://res.cloudinary.com/donutdeflector/image/upload/h_580,f_auto,q_auto:/v1583813797/{{team_photo.public_id}}">
+      <img
+      src="https://res.cloudinary.com/donutdeflector/image/upload/h_32,f_auto,q_auto:low/v1583813797/{{team_photo.public_id}}"
+      data-big="https://res.cloudinary.com/donutdeflector/image/upload/h_1200,f_auto,q_auto:/v1583813797/{{team_photo.public_id}}"
+      >
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+
+  <p>Looks like there's no robot photos for this team yet.</p>
+  {% if team_number %}
+  <a class="btn btn-primary" role="button" href="{{url_for('pit_scout.add_pit_photos', team_number=team_number)}}">Add Pit Photos</a>
+  {% else %}
+  <a class="btn btn-primary" role="button" href="{{url_for('pit_scout.add_pit_photos')}}">Add Pit Photos</a>
+  {% endif %}
+
+  {% endif %}
+</div>
 
 <div class="mb-3">
   <h3>District Statistics</h3>
@@ -285,5 +310,19 @@
 
   {% endif %}
 </div>
+
+<script src="{{url_for('static', filename='js/galleria.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/galleria.azur.min.js')}}"></script>
+
+<script>
+  (function() {
+      Galleria.run('.galleria', {
+        height: (9/16),
+        imageCrop: "false",
+        trueFullscreen: false,
+        preload: 0
+      });
+  }());
+</script>
 
 {% endblock %}

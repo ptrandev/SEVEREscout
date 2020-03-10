@@ -6,6 +6,10 @@ from wtforms.widgets.html5 import NumberInput
 #import models
 #from wtforms_alchemy import ModelForm
 
+class GetTeamForm(FlaskForm):
+  team_number = IntegerField("Team Number", validators=([DataRequired()]))
+  submit = SubmitField("Submit")
+
 class PitReportForm(FlaskForm):
   # metadata
   team_number = IntegerField("Team Number", validators=([DataRequired()]))

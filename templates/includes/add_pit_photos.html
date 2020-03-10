@@ -1,0 +1,5 @@
+{% if team_number %}
+<a class="btn btn-primary" role="button" href="{{url_for('pit_scout.add_pit_photos', team_number=team_number)}}">Add Pit Photos</a>
+{% else %}
+<a class="btn btn-primary" role="button" href="{{url_for('pit_scout.add_pit_photos')}}">Add Pit Photos</a>
+{% endif %}

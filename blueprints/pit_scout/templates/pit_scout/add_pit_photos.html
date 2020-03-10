@@ -5,24 +5,71 @@
 
 {% block content %}
 
-<h1>Add Pit Photos</h1>
+{% if team_number %}
 
-<input class="filepond-input" type="file" multiple>
+<h1>Add Team {{team_number}} Photos</h1>
+
+{% include "includes/team_profile_button.html" %}
+
+<hr>
+
+<form method='POST' enctype="multipart/form-data">
+  <input type="file" name='file' multiple>
+</form>
 
 <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js"></script>
+<script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+<script src="{{url_for('static', filename='js/filepond.min.js')}}"></script>
 
 <script>
-// Register the plugin with FilePond
-FilePond.registerPlugin(FilePondPluginImagePreview);
+const inputElement = document.querySelector('input[type="file"]');
 
-// Get a reference to the file input element
-const inputElement = document.querySelector('.filepond-input');
+FilePond.registerPlugin(
+  FilePondPluginImagePreview,
+  FilePondPluginImageResize,
+  FilePondPluginImageExifOrientation,
+  FilePondPluginImageTransform,
+  FilePondPluginFileValidateType
+);
 
-// Create the FilePond instance
-const pond = FilePond.create(
-  inputElement,
-  instantUpload = false
-  );
+const pond = FilePond.create(inputElement, {
+  server: '{{team_number}}',
+  imageResizeUpscale: false,
+  imageResizeTargetHeight: 2000,
+  imageResizeTargetWidth: 2000,
+  imageTransformOutputQuality: 90,
+  acceptedFileTypes: ['image/*'],
+  allowRevert: false
+});
+
 </script>
+{% else %}
+<h1>Add Pit Photos</h1>
+
+<hr>
+
+<p>Enter the team you wish to submit photos of.</p>
+
+<form method="POST" action="{{url_for('pit_scout.add_pit_photos_team_search')}}"">
+  {{ form.hidden_tag() }}
+
+  {% if form.errors %}
+    {{ form.errors }}
+  {% endif %}
+
+  <div class="form-row">
+    <div class="form-group col-7 col-sm-9">
+      {{form.team_number(class="form-control", placeholder="team number")}}
+    </div>
+    <div class="form-group col-5 col-sm-3">
+      {{form.submit(class="btn btn-primary btn-block")}}
+    </div>
+  </div>
+</form>
+
+{% endif %}
+
 {% endblock %}
