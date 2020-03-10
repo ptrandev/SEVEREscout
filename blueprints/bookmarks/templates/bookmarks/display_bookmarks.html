@@ -1,0 +1,42 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+
+{% include "includes/search.html" %}
+
+  <h1>Bookmarks</h1>
+
+  <hr>
+
+  {% if user_bookmarks %}
+  <h3>Your Bookmarks</h3>
+  <div class="row">
+    {% for bookmark in user_bookmarks | reverse %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3><a href="{{url_for('team.profile', team_number=bookmark.team_number)}}">{{bookmark.team_number}}</a></h3>
+          <p class="mb-0">{{bookmark.user.first_name}} {{bookmark.user.last_name}}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+
+  {% if all_bookmarks %}
+  <h3>Team Bookmarks</h3>
+  <div class="row">
+    {% for bookmark in all_bookmarks | reverse %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3><a href="{{url_for('team.profile', team_number=bookmark.team_number)}}">{{bookmark.team_number}}</a></h3>
+          <p class="mb-0">{{bookmark.user.first_name}} {{bookmark.user.last_name}}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endblock %}

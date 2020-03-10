@@ -1,0 +1,44 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+
+{% include "includes/search.html" %}
+
+<h1>Match Scout</h1>
+
+{% include "includes/add_match_report_button.html" %}
+
+<hr>
+
+<div class="row">
+  {% for match in matches | reverse %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card">
+        <h4 class="card-header">Match {{ match.match }}</h4>
+        <div class="card-body">
+          <h5 class="card-title">Blue Alliance</h5>
+          <ul>
+            {% for match_report in match.match_reports %}
+              {% if match_report.alliance == "Blue" %}
+                <li>{{match_report.team.team_number}}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          <h5 class="card-title">Red Alliance</h5>
+          <ul>
+            {% for match_report in match.match_reports %}
+              {% if match_report.alliance == "Red" %}
+                <li>{{match_report.team.team_number}}</li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          <a href="{{url_for('match_scout.match', match_number=match.match)}}" class="btn btn-primary">View Match</a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<div class="table-responsive">
+</div>
+
+{% endblock %}

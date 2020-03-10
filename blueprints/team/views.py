@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect, request
 from forms import TeamForm, TeamSearchForm
-from models import Team
+from models import Match, MatchReport, Bookmark, PitReport, AllianceSuggestion, TeamStats, Team
 from app import db
 
 import os
@@ -11,7 +11,7 @@ team = Blueprint("team", __name__, template_folder="templates")
 
 TBA_AUTH_KEY = os.environ.get("TBA_AUTH_KEY", default=False)
 
-@team.route("/team/search", methods=["POST"])
+@team.route("/search", methods=["POST"])
 def search():
     # check if logged in w/ google
     if not google_auth.is_logged_in():
@@ -23,26 +23,82 @@ def search():
     if form.validate():
         team_number = form.team_number.data
         
-        return(redirect(url_for("team.info", team_number=team_number)))
+        return(redirect(url_for("team.profile", team_number=team_number)))
 
-@team.route("/team/<int:team_number>")
-def info(team_number):
+@team.route("/profile/<int:team_number>")
+def profile(team_number):
     # check if logged in w/ google
     if not google_auth.is_logged_in():
         return(redirect(url_for("google_auth.login")))
+    
+    form = TeamSearchForm()
+
+    # get team
+    team = Team.query.filter_by(team_number=team_number).first()
+
+    # get bookmark
+    bookmark = Bookmark.query.filter(Bookmark.team_number == team_number).first()
 
     # get team info from TBA API
-    response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}",
-                            headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
-    tba_data = response.json()
+    response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+    team_info = response.json()
 
-    # get team info from db
-    db_data = Team.query.filter_by(team_number=team_number).first()
+    # get events from TBA API
+    response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}/events/2020", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+    events = response.json()
 
-    return(render_template("team/info.html", tba_data=tba_data, db_data=db_data,
-                           team_number=team_number))
+    # get event statuses from TBA API
+    response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}/events/2020/statuses", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+    event_statuses = response.json()
 
+    # get OPRs (OPR, DPR, CCWM) from TBA API
+    oprs = {}
 
+    for event in event_statuses:
+        response = requests.get(f"https://www.thebluealliance.com/api/v3/event/{event}/oprs", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+        response = response.json()
+
+        oprs[event] = response
+
+    # get district from TBA API
+    response = requests.get(f"https://www.thebluealliance.com/api/v3/team/frc{team_number}/districts", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+    response = response.json()
+    if response:
+        district = response[len(response) - 1]
+    else:
+        district = None
+
+    # get district ranking from TBA API
+    if district:
+        response = requests.get(f"https://www.thebluealliance.com/api/v3/district/{district.get('key')}/rankings", headers={"X-TBA-Auth-Key": TBA_AUTH_KEY})
+        response = response.json()
+        district_ranking = list(filter(lambda x:x["team_key"]==f"frc{team_number}", response))
+    else:
+        district_ranking = None
+
+    if team:
+        # get alliance suggestion 1st pick
+        alliance_suggestion_1 = AllianceSuggestion.query.filter(AllianceSuggestion.team_id == team.id, AllianceSuggestion.pick_number == 1).first()
+
+        # get alliance suggestion 2nd pick
+        alliance_suggestion_2 = AllianceSuggestion.query.filter(AllianceSuggestion.team_id == team.id, AllianceSuggestion.pick_number == 2).first()
+
+        match_reports = MatchReport.query.filter_by(team_id=team.id).join(Match).all()
+        team_stats = TeamStats.query.filter_by(team_id=team.id).first()
+        pit_reports = PitReport.query.filter_by(team_id=team.id).all()
+    else:
+        alliance_suggestion_1 = None
+        alliance_suggestion_2 = None
+        match_reports = None
+        team_stats = None
+        pit_reports = None
+
+    return(render_template("team/profile.html", team_number=team_number,
+                           match_reports=match_reports, team_stats=team_stats,
+                           pit_reports=pit_reports, team_info=team_info, event_statuses=event_statuses, form=form,
+                           bookmark=bookmark, events=events, district=district, district_ranking=district_ranking, oprs=oprs, alliance_suggestion_1=alliance_suggestion_1, alliance_suggestion_2=alliance_suggestion_2))
+
+"""
 @team.route("/team/add", defaults={"team_number": None}, methods=["GET", "POST"])
 @team.route("/team/add/<int:team_number>", methods=["GET", "POST"])
 def add(team_number):
@@ -59,12 +115,12 @@ def add(team_number):
         team.team_number = form.team_number.data
         team.hang = form.hang.data
         team.balanced = form.balanced.data
-        team.score_lower = form.score_lower.data
-        team.score_outer = form.score_lower.data
+        team.score_bottom = form.score_bottom.data
+        team.score_outer = form.score_bottom.data
         team.score_inner = form.score_inner.data
         team.control_panel = form.control_panel.data
         team.auto_move = form.auto_move.data
-        team.auto_score_lower = form.auto_score_lower.data
+        team.auto_score_bottom = form.auto_score_bottom.data
         team.auto_score_outer = form.auto_score_outer.data
         team.auto_score_inner = form.auto_score_inner.data
         team.drivetrain = form.drivetrain.data
@@ -86,7 +142,7 @@ def edit(team_number):
 
     form = TeamForm(request.form)
 
-    # get team info from fb
+    # get team info from db
     team = Team.query.filter_by(team_number=team_number).first()
 
     # if POST request, validate form and edit db entry
@@ -94,12 +150,12 @@ def edit(team_number):
         team.team_number = form.team_number.data
         team.hang = form.hang.data
         team.balanced = form.balanced.data
-        team.score_lower = form.score_lower.data
-        team.score_outer = form.score_lower.data
+        team.score_bottom = form.score_bottom.data
+        team.score_outer = form.score_bottom.data
         team.score_inner = form.score_inner.data
         team.control_panel = form.control_panel.data
         team.auto_move = form.auto_move.data
-        team.auto_score_lower = form.auto_score_lower.data
+        team.auto_score_bottom = form.auto_score_bottom.data
         team.auto_score_outer = form.auto_score_outer.data
         team.auto_score_inner = form.auto_score_inner.data
         team.drivetrain = form.drivetrain.data
@@ -115,3 +171,4 @@ def edit(team_number):
 
     return(render_template("team/edit.html", form=form, team=team,
                            team_number=team_number))
+"""

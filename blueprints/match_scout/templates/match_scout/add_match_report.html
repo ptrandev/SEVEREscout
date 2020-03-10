@@ -1,0 +1,215 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+
+  <h1>Add Match Report</h1>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+
+    {% if form.errors %}
+      {{ form.errors }}
+    {% endif %}
+
+    <h4>Metadata</h4>
+
+    <div class="form-group">
+      {{form.team_number.label}}
+      {% if team_number %}
+        {{form.team_number(class="form-control", min="0", value=team_number)}}
+      {% else %}
+        {{form.team_number(class="form-control", min="0")}}
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      {{form.match.label}}
+      {{form.match(class="form-control", min="0")}}
+    </div>
+
+    <div class="form-group">
+      {{form.event.label}}
+      {{form.event(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.alliance.label}}
+      {{form.alliance(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.station.label}}
+      {{form.station(class="form-control", min="1", max="3")}}
+    </div>
+
+    <h4>Auto</h4>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.auto_move(class="form-check-input")}}
+        {{form.auto_move.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.auto_collect_balls(class="form-check-input")}}
+        {{form.auto_collect_balls.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.auto_score_bottom.label}}
+      <div class="input-group">
+        {{form.auto_score_bottom(class="form-control", min="0")}}
+        <div class="input-group-append">
+          <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+          <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.auto_score_upper.label}}
+      <div class="input-group">
+        {{form.auto_score_upper(class="form-control", min="0")}}
+        <div class="input-group-append">
+          <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+          <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <h4>Teleop</h4>
+
+    <div class="form-group">
+      {{form.teleop_score_bottom.label}}
+      <div class="input-group">
+        {{form.teleop_score_bottom(class="form-control", min="0")}}
+        <div class="input-group-append">
+          <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+          <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.teleop_score_upper.label}}
+      <div class="input-group">
+      {{form.teleop_score_upper(class="form-control", min="0")}}
+      <div class="input-group-append">
+        <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+        <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+      </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.teleop_attempts.label}}
+      <div class="input-group">
+        {{form.teleop_attempts(class="form-control", min="0")}}
+        <div class="input-group-append">
+          <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+          <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <h4>Control Panel</h4>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.control_panel_rotation(class="form-check-input")}}
+        {{form.control_panel_rotation.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.control_panel_position(class="form-check-input")}}
+        {{form.control_panel_position.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <h4>Defense</h4>
+
+    <div class="form-group">
+      {{form.defense_performance.label}}
+      {{form.defense_performance(class="form-control")}}
+    </div>
+
+    <div class="form-group">
+      {{form.defense_penalities.label}}
+      <div class="input-group">
+      {{form.defense_penalities(class="form-control", min="0")}}
+      <div class="input-group-append">
+        <button class="btn btn-minus btn-danger" type="button"><i class="fas fa-minus"></i></button>
+        <button class="btn btn-plus btn-success" type="button"><i class="fas fa-plus"></i></button>
+      </div>
+      </div>
+    </div>
+
+    <h4>Hang</h4>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.hang_able(class="form-check-input")}}
+        {{form.hang_able.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.hang_level(class="form-check-input")}}
+        {{form.hang_level.label(class="form-check-label")}}
+      </div>
+
+      <div class="form-check form-check-inline">
+        {{form.hang_active(class="form-check-input")}}
+        {{form.hang_active.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{form.hang_position.label}}
+      {{form.hang_position(class="form-control")}}
+    </div>
+
+    <h4>Comms</h4>
+
+    <div class="form-group">
+      <div class="form-check form-check-inline">
+        {{form.emergency_stop(class="form-check-input")}}
+        {{form.emergency_stop.label(class="form-check-label")}}
+      </div>
+      <div class="form-check form-check-inline">
+        {{form.connection_issues(class="form-check-input")}}
+        {{form.connection_issues.label(class="form-check-label")}}
+      </div>
+      <div class="form-check form-check-inline">
+        {{form.brownouts(class="form-check-input")}}
+        {{form.brownouts.label(class="form-check-label")}}
+      </div>
+    </div>
+
+    <h4>Misc</h4>
+    
+    <div class="form-group">
+      {{form.notes.label}}
+      {{form.notes(class="form-control", oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'")}}
+    </div>
+
+    {{form.submit(class="btn btn-primary")}}
+  </form>
+
+  <script>
+    $("textarea").height($("textarea")[0].scrollHeight);
+
+    document.querySelectorAll('.btn-minus').forEach(item => {
+      item.addEventListener('click', event => {
+        item.parentNode.parentNode.querySelector('input[type=number]').stepDown()
+      })
+    })
+
+    document.querySelectorAll('.btn-plus').forEach(item => {
+      item.addEventListener('click', event => {
+        item.parentNode.parentNode.querySelector('input[type=number]').stepUp()
+      })
+    })
+
+  </script>
+
+{% endblock %}

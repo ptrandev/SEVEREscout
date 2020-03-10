@@ -1,0 +1,183 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+
+{% include "includes/search.html" %}
+
+  <h1>Alliance Suggestions</h1>
+
+  <hr>
+
+  <h2>1st Pick</h2>
+
+  <div class="mb-4">
+    <table id="1st-pick-table" data-toggle="table" data-search="true" data-show-columns="true" data-show-multi-sort="true" data-click-to-select="true" class="table">
+      <thead>
+        <tr>
+          <th data-field="team.number" data-sortable="true" scope="col">Team</th>
+          <th data-field="team.avg-auto-points" data-sortable="true" scope="col">Avg Auto Pts</th>
+          <th data-field="team.avg-teleop-points" data-sortable="true" scope="col">Avg Teleop Pts</th>
+          <th data-field="team.avg-teleop-success" data-sortable="true" scope="col">Teleop %</th>
+          <th data-field="team.avg-control-panel-points" data-sortable="true" scope="col">Avg CP Pts</th>
+          <th data-field="team.avg-hang-points" data-sortable="true" scope="col">Avg Hang Pts</th>
+          <th data-field="team.avg-hang/match" data-sortable="true" scope="col">Hang/Match</th>
+          <th data-field="team.avg-defense-penalties" data-sortable="true" scope="col">Avg Defense Penalties</th>
+          <th data-field="team.avg-connection-issues/match" data-sortable="true" scope="col">Connection Issues/Match</th>
+          <th data-field="team.avg-brownouts/match" data-sortable="true" scope="col">Brownouts/Match</th>
+          <th data-field="team.avg-emergency-stops/match" data-sortable="true" scope="col">Emergency Stops/Match</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for alliance_suggestion in alliance_suggestions_1 %}
+        <tr>
+          <th scope="row"><a href="{{url_for('team.profile', team_number=alliance_suggestion.team.team_number)}}">{{alliance_suggestion.team.team_number}}</a></th>
+          {% if alliance_suggestion.team.team_stats %}
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].auto_points_avg}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].teleop_points_avg}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].teleop_success_rate * 100}}%</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].control_panel_points_avg}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].hang_points_avg}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].hang_able}}/{{alliance_suggestion.team.team_stats[0].num_matches}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].defense_penalties_avg}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].connection_issues}}/{{alliance_suggestion.team.team_stats[0].num_matches}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].brownouts}}/{{alliance_suggestion.team.team_stats[0].num_matches}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].emergency_stops}}/{{alliance_suggestion.team.team_stats[0].num_matches}}</td>
+          {% else %}
+            {% for i in range (10) %}
+            <td scope="row"></td>
+            {% endfor %}
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row">
+    {% for alliance_suggestion in alliance_suggestions_1 | sort(attribute="already_selected") | sort (attribute="accepted") %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3><a href="{{url_for('team.profile', team_number=alliance_suggestion.team.team_number)}}">{{alliance_suggestion.team.team_number}}</a></h3>
+          <p class="mb-0">{{alliance_suggestion.user.first_name}} {{alliance_suggestion.user.last_name}}</p>
+        </div>
+        <div class="card-body">
+          <div class="d-flex flex-row justify-content-between">
+            <form action="{{url_for('alliance_suggestions.team_accepted', team_number=alliance_suggestion.team.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+              {% if alliance_suggestion.accepted %}
+              <button type="submit" class="btn btn-success"><i class="fas fa-check"></i></button>
+              {% else %}
+              <button type="submit" class="btn btn-outline-success"><i class="fas fa-check"></i></button>
+              {% endif %}
+            </form>
+            <form action="{{url_for('alliance_suggestions.team_already_selected', team_number=alliance_suggestion.team.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+              {% if alliance_suggestion.already_selected %}
+              <button type="submit" class="btn btn-secondary"><i class="fas fa-lock-open"></i></button>
+              {% else %}
+              <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-lock-open"></i></button>
+              {% endif %}
+            </form>
+            <form action="{{url_for('alliance_suggestions.team_denied', team_number=alliance_suggestion.team.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+              {% if alliance_suggestion.denied %}
+              <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i></button>
+              {% else %}
+              <button type="submit" class="btn btn-outline-danger"><i class="fas fa-times"></i></button>
+              {% endif %}
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <h2>2nd Pick</h2>
+
+  <div class="mb-4">
+    <table id="2st-pick-table" data-toggle="table" data-search="true" data-show-columns="true" data-show-multi-sort="true" data-click-to-select="true" class="table">
+      <thead>
+        <tr>
+          <th data-field="team.number" data-sortable="true" scope="col">Team</th>
+          <th data-field="team.avg-auto-points" data-sortable="true" scope="col">Avg Auto Pts</th>
+          <th data-field="team.avg-teleop-points" data-sortable="true" scope="col">Avg Teleop Pts</th>
+          <th data-field="team.avg-teleop-success" data-sortable="true" scope="col">Teleop %</th>
+          <th data-field="team.avg-control-panel-points" data-sortable="true" scope="col">Avg CP Pts</th>
+          <th data-field="team.avg-hang-points" data-sortable="true" scope="col">Avg Hang Pts</th>
+          <th data-field="team.avg-hang/match" data-sortable="true" scope="col">Hang/Match</th>
+          <th data-field="team.avg-defense-penalties" data-sortable="true" scope="col">Avg Defense Penalties</th>
+          <th data-field="team.avg-connection-issues/match" data-sortable="true" scope="col">Connection Issues/Match</th>
+          <th data-field="team.avg-brownouts/match" data-sortable="true" scope="col">Brownouts/Match</th>
+          <th data-field="team.avg-emergency-stops/match" data-sortable="true" scope="col">Emergency Stops/Match</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for alliance_suggestion in alliance_suggestions_2 %}
+        <tr>
+          <th scope="row"><a href="{{url_for('team.profile', team_number=alliance_suggestion.team.team_number)}}">{{alliance_suggestion.team.team_number}}</a></th>
+          {% if alliance_suggestion.team.team_stats %}
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].auto_points_avg}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].teleop_points_avg}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].teleop_success_rate * 100}}%</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].control_panel_points_avg}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].hang_points_avg}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].hang_able}}/{{alliance_suggestion.team.team_stats[0].num_matches}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].defense_penalties_avg}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].connection_issues}}/{{alliance_suggestion.team.team_stats[0].num_matches}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].brownouts}}/{{alliance_suggestion.team.team_stats[0].num_matches}}</td>
+          <td scope="row">{{alliance_suggestion.team.team_stats[0].emergency_stops}}/{{alliance_suggestion.team.team_stats[0].num_matches}}</td>
+          {% else %}
+            {% for i in range (10) %}
+            <td scope="row"></td>
+            {% endfor %}
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row">
+    {% for alliance_suggestion in alliance_suggestions_2 | sort(attribute="already_selected") | sort (attribute="accepted") %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3><a href="{{url_for('team.profile', team_number=alliance_suggestion.team.team_number)}}">{{alliance_suggestion.team.team_number}}</a></h3>
+          <p class="mb-0">{{alliance_suggestion.user.first_name}} {{alliance_suggestion.user.last_name}}</p>
+        </div>
+        <div class="d-flex flex-row justify-content-between card-body">
+          <form action="{{url_for('alliance_suggestions.team_accepted', team_number=alliance_suggestion.team.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+            {% if alliance_suggestion.accepted %}
+            <button type="submit" class="btn btn-success"><i class="fas fa-check"></i></button>
+            {% else %}
+            <button type="submit" class="btn btn-outline-success"><i class="fas fa-check"></i></button>
+            {% endif %}
+          </form>
+          <form action="{{url_for('alliance_suggestions.team_already_selected', team_number=alliance_suggestion.team.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+            {% if alliance_suggestion.already_selected %}
+            <button type="submit" class="btn btn-secondary"><i class="fas fa-lock-open"></i></button>
+            {% else %}
+            <button type="submit" class="btn btn-outline-secondary"><i class="fas fa-lock-open"></i></button>
+            {% endif %}
+          </form>
+          <form action="{{url_for('alliance_suggestions.team_denied', team_number=alliance_suggestion.team.team_number, pick_number=alliance_suggestion.pick_number)}}" method="POST">
+            {% if alliance_suggestion.denied %}
+            <button type="submit" class="btn btn-danger"><i class="fas fa-times"></i></button>
+            {% else %}
+            <button type="submit" class="btn btn-outline-danger"><i class="fas fa-times"></i></button>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+<link href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css" rel="stylesheet">
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
+
+<script>
+$(function() {
+  $('#1st-pick-table').bootstrapTable()
+})
+</script>
+{% endblock %}

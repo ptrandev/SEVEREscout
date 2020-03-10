@@ -11,8 +11,6 @@ from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
 
-import google_auth
-
 template_folder = "templates"
 static_folder = "static"
 
@@ -25,12 +23,24 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://phillip:phillip@localhost:
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+import google_auth
+
 from blueprints.home.views import home
+from blueprints.pit_scout.views import pit_scout
+from blueprints.match_scout.views import match_scout
 from blueprints.team.views import team
+from blueprints.bookmarks.views import bookmarks
+from blueprints.alliance_suggestions.views import alliance_suggestions
+from blueprints.stats.views import stats
 
 app.register_blueprint(google_auth.app)
 app.register_blueprint(home)
-app.register_blueprint(team)
+app.register_blueprint(team, url_prefix="/team")
+app.register_blueprint(pit_scout, url_prefix="/pit_scout")
+app.register_blueprint(match_scout, url_prefix="/match_scout")
+app.register_blueprint(bookmarks, url_prefix="/bookmarks")
+app.register_blueprint(alliance_suggestions, url_prefix="/alliance_suggestions")
+app.register_blueprint(stats, url_prefix="/stats")
 
 if __name__ == '__main__':
     app.run(debug=True)

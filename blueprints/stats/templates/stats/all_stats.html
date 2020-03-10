@@ -1,0 +1,58 @@
+{% extends "layouts/default.html" %}
+
+{% block content %}
+
+{% include "includes/search.html" %}
+
+<h1>Stats</h1>
+
+<hr>
+
+<div>
+  <table id="team-table" data-toggle="table" data-search="true" data-show-columns="true" data-show-multi-sort="true" class="table">
+    <thead>
+      <tr>
+        <th data-field="team.number" data-sortable="true" scope="col">Team</th>
+        <th data-field="team.avg-auto-points" data-sortable="true" scope="col">Avg Auto Pts</th>
+        <th data-field="team.avg-teleop-points" data-sortable="true" scope="col">Avg Teleop Pts</th>
+        <th data-field="team.avg-teleop-success" data-sortable="true" scope="col">Teleop %</th>
+        <th data-field="team.avg-control-panel-points" data-sortable="true" scope="col">Avg CP Pts</th>
+        <th data-field="team.avg-hang-points" data-sortable="true" scope="col">Avg Hang Pts</th>
+        <th data-field="team.avg-hang/match" data-sortable="true" scope="col">Hang/Match</th>
+        <th data-field="team.avg-defense-penalties" data-sortable="true" scope="col">Avg Defense Penalties</th>
+        <th data-field="team.avg-connection-issues/match" data-sortable="true" scope="col">Connection Issues/Match</th>
+        <th data-field="team.avg-brownouts/match" data-sortable="true" scope="col">Brownouts/Match</th>
+        <th data-field="team.avg-emergency-stops/match" data-sortable="true" scope="col">Emergency Stops/Match</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for team in teams %}
+      <tr>
+        <th scope="row"><a href="{{url_for('team.profile', team_number=team.team_number)}}">{{team.team_number}}</a></th>
+        <td scope="row">{{team.team_stats[0].auto_points_avg}}</td>
+        <td scope="row">{{team.team_stats[0].teleop_points_avg}}</td>
+        <td scope="row">{{team.team_stats[0].teleop_success_rate * 100}}%</td>
+        <td scope="row">{{team.team_stats[0].control_panel_points_avg}}</td>
+        <td scope="row">{{team.team_stats[0].hang_points_avg}}</td>
+        <td scope="row">{{team.team_stats[0].hang_able}}/{{team.team_stats[0].num_matches}}</td>
+        <td scope="row">{{team.team_stats[0].defense_penalties_avg}}</td>
+        <td scope="row">{{team.team_stats[0].connection_issues}}/{{team.team_stats[0].num_matches}}</td>
+        <td scope="row">{{team.team_stats[0].brownouts}}/{{team.team_stats[0].num_matches}}</td>
+        <td scope="row">{{team.team_stats[0].emergency_stops}}/{{team.team_stats[0].num_matches}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<link href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css" rel="stylesheet">
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/multiple-sort/bootstrap-table-multiple-sort.js"></script>
+
+<script>
+$(function() {
+  $('#team-table').bootstrapTable()
+})
+</script>
+
+{% endblock %}

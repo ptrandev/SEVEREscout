@@ -1,0 +1,132 @@
+{% extends "layouts/default.html" %}
+{% block content %}
+
+{% include "includes/search.html" %}
+
+<h1>Pit Reports</h1>
+
+{% include "includes/add_pit_report.html" %}
+
+<hr>
+
+<h2>Team {{team_number}}</h2>
+
+{% include "includes/team_profile_button.html" %}
+
+<div class="row mt-3">
+  <div class="col">
+  {% for pit_report in pit_reports | reverse %}
+    <div class="card mb-3">
+      <div class="card-header">
+        <h5 class="mb-0">{{pit_report.event}}</h5>
+        <a class="btn btn-primary" role="button" href="{{url_for('pit_scout.edit_pit_report', pit_report_id=pit_report.id)}}">Edit Pit Report</a>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-pit-report-{{pit_report.id}}">Delete Pit Report</button>
+      </div>
+      <div class="card-body">
+        <h4>Drivetrain</h4>
+        <ul>
+          <li>Drivetrain Type: {{pit_report.drivetrain_type}}</li>
+          <li>Wheel Type: {{pit_report.wheel_type}}</li>
+          <li>Wheel Number: {{pit_report.wheel_number}}</li>
+          <li>Motor Type: {{pit_report.motor_type}}</li>
+          <li>Motor Number: {{pit_report.motor_number}}</li>
+        </ul>
+        <p class="card-text">
+          {% autoescape false %}
+            {{pit_report.drivetrain_notes | replace("\n", "<br>")}}
+          {% endautoescape %}
+        </p>
+
+        <h4>Physical Characteristics</h4>
+        <ul>
+          <li>Weight: {{pit_report.weight}} Pounds</li>
+          <li>Height: {{pit_report.height}} Inches</li>
+          <li>Width: {{pit_report.width}} Inches</li>
+          <li>Length: {{pit_report.length}} Inches</li>
+          <li>Speed" {{pit_report.speed_unit}} Feet Per Second</li>
+        </ul>
+
+        <h4>Auto</h4>
+        <ul>
+          <li>Move: {{pit_report.auto_move}}</li>
+          <li>Collect Balls: {{pit_report.auto_collect_balls}}</li>
+          <li>Consistency: {{pit_report.auto_consistency}}</li>
+          <li>Score Bottom: {{pit_report.auto_score_bottom}}</li>
+          <li>Score Outer: {{pit_report.auto_score_outer}}</li>
+          <li>Score Inner: {{pit_report.auto_score_inner}}</li>
+          <li>Prefered Position: {{pit_report.auto_prefered_position}}</li>
+        </ul>
+
+        <h4>Teleop</h4>
+        <ul>
+          <li>Score Bottom: {{pit_report.teleop_score_bottom}}</li>
+          <li>Score Outer: {{pit_report.teleop_score_outer}}</li>
+          <li>Score Inner: {{pit_report.teleop_score_inner}}</li>
+          <li>Consistency: {{pit_report.teleop_consistency}}</li>
+          <li>Prefered Position: {{pit_report.teleop_prefered_position}}</li>
+        </ul>
+
+        <h4>Control Panel</h4>
+        <ul>
+          <li>Rotation: {{pit_report.control_panel_rotation}}</li>
+          <li>Position: {{pit_report.control_panel_position}}</li>
+        </ul>
+
+        <h4>Hang</h4>
+        <ul>
+          <li>Able: {{pit_report.hang_able}}</li>
+          <li>Level: {{pit_report.hang_level}}</li>
+          <li>Prefered Position: {{pit_report.hang_prefered_positon}}</li>
+          <li>Active: {{pit_report.hang_active}}</li>
+          <li>Time: {{pit_report.hang_time}} Seconds</li>
+          <li>Consistency: {{pit_report.hang_consistency}}</li>
+        </ul>
+
+        <h4>Personnel</h4>
+        <ul>
+          <li>Honesty: {{pit_report.personnel_honesty}}</li>
+          <li>Answering: {{pit_report.personnel_answering}}</li>
+        </ul>
+        <p class="card-text">
+          {% autoescape false %}
+            {{pit_report.personnel_notes | replace("\n", "<br>")}}
+          {% endautoescape %}
+        </p>
+
+        <h4>Misc</h4>
+        <p class="card-text">
+          {% autoescape false %}
+            {{pit_report.notes | replace("\n", "<br>")}}
+          {% endautoescape %}
+        </p>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+</div>
+
+{% for pit_report in pit_reports %}
+<div class="modal fade" id="delete-pit-report-{{pit_report.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete Pit Report</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this pit report?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <form method="POST" action="{{url_for('pit_scout.delete_pit_report', pit_report_id=pit_report.id)}}">
+          <button type="submit" class="btn btn-danger">Delete Match Report</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

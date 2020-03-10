@@ -1,0 +1,28 @@
+{% extends "layouts/default.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+<h1>Add Pit Photos</h1>
+
+<input class="filepond-input" type="file" multiple>
+
+<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+
+<script>
+// Register the plugin with FilePond
+FilePond.registerPlugin(FilePondPluginImagePreview);
+
+// Get a reference to the file input element
+const inputElement = document.querySelector('.filepond-input');
+
+// Create the FilePond instance
+const pond = FilePond.create(
+  inputElement,
+  instantUpload = false
+  );
+</script>
+{% endblock %}
