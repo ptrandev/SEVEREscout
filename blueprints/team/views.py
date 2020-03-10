@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect, request
 from forms import TeamForm, TeamSearchForm
-from models import Match, MatchReport, Bookmark, PitReport, AllianceSuggestion, TeamStats, Team
+from models import Match, MatchReport, Bookmark, PitReport, AllianceSuggestion, TeamStats, Team, TeamPhoto
 from app import db
 
 import os
@@ -86,15 +86,17 @@ def profile(team_number):
         match_reports = MatchReport.query.filter_by(team_id=team.id).join(Match).all()
         team_stats = TeamStats.query.filter_by(team_id=team.id).first()
         pit_reports = PitReport.query.filter_by(team_id=team.id).all()
+        team_photos = TeamPhoto.query.filter_by(team_id=team.id).all()
     else:
         alliance_suggestion_1 = None
         alliance_suggestion_2 = None
         match_reports = None
         team_stats = None
         pit_reports = None
+        team_photos = None
 
     return(render_template("team/profile.html", team_number=team_number,
-                           match_reports=match_reports, team_stats=team_stats,
+                           match_reports=match_reports, team_stats=team_stats, team_photos=team_photos,
                            pit_reports=pit_reports, team_info=team_info, event_statuses=event_statuses, form=form,
                            bookmark=bookmark, events=events, district=district, district_ranking=district_ranking, oprs=oprs, alliance_suggestion_1=alliance_suggestion_1, alliance_suggestion_2=alliance_suggestion_2))
 

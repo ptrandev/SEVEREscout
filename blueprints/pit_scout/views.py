@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, url_for, redirect, request
-from forms import PitReportForm, PitPhotosForm, TeamSearchForm
-from models import PitReport, Team
+from forms import PitReportForm, PitPhotosForm, TeamSearchForm, GetTeamForm
+from models import PitReport, Team, User, TeamPhoto
 from app import db
 from werkzeug.utils import secure_filename
 from pathlib import Path
@@ -9,6 +9,9 @@ import json
 import os
 import requests
 import google_auth
+
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary_url
 
 pit_scout = Blueprint("pit_scout", __name__, template_folder="templates")
 
@@ -157,20 +160,73 @@ def add_pit_report(team_number):
 
   return(render_template("pit_scout/add_pit_report.html", form=form, team_number=team_number))
 
+@pit_scout.route("/add_pit_photos_team_search", methods=["POST"])
+def add_pit_photos_team_search():
+    # check if logged in w/ google
+    if not google_auth.is_logged_in():
+        return(redirect(url_for("google_auth.login")))
+
+    form = GetTeamForm(request.form)
+
+    # if POST request, validate form and redirect to info route w/ team #
+    if form.validate():
+        team_number = form.team_number.data
+        
+        return(redirect(url_for("pit_scout.add_pit_photos", team_number=team_number)))
+
 @pit_scout.route("/add_pit_photos", defaults={"team_number": None},
                  methods=["GET", "POST"])
-@pit_scout.route("/add_pit_photos/<int:team_number>", methods=["GET", "POST"])
+@pit_scout.route("/add_pit_photos/<int:team_number>", methods=["GET", "POST", "DELETE"])
 def add_pit_photos(team_number):
   # check if logged in w/ google
   if not google_auth.is_logged_in():
     return(redirect(url_for("google_auth.login")))
-  
-  form = PitPhotosForm(request.form)
-  
-  if request.method == "POST":
-    return(redirect(url_for("pit_scout.add_pit_report")))
 
-  return(render_template("pit_scout/add_pit_photos.html", form=form))
+  if team_number:
+    form = PitPhotosForm(request.form)
+  else:
+    form = GetTeamForm()
+
+  # process uploaded images
+  if request.method == "POST":
+    file_to_upload = request.files['file']
+
+    if file_to_upload:
+      upload_result = upload(file_to_upload, folder="severescout")
+      print(upload_result)
+
+      user_info = google_auth.get_user_info()
+      user = User.query.filter_by(user_id=user_info["id"]).first()
+
+      # find team from form
+      team = Team.query.filter_by(team_number=team_number).first()
+
+      # if team doesn't exist, make it
+      if not team:
+        team = Team(
+          team_number = team_number
+        )
+
+      team_photo = TeamPhoto(
+        team_id = team.id,
+        user_id = user.id,
+        url = upload_result["secure_url"],
+        height = upload_result["height"],
+        width = upload_result["width"],
+        public_id = upload_result["public_id"],
+        format = upload_result["format"],
+        version = upload_result["version"]
+      )
+      
+      team.team_photos.append(team_photo)
+
+      db.session.add(team)
+      db.session.add(team_photo)
+      db.session.commit()
+
+      return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+  return(render_template("pit_scout/add_pit_photos.html", form=form, team_number=team_number))
 
 @pit_scout.route("/edit_pit_report/<int:pit_report_id>", methods=["GET", "POST"])
 def edit_pit_report(pit_report_id):
