@@ -45,7 +45,7 @@ def add_match_report(team_number):
 
     match = Match.query.filter(Match.match==form.match.data).first()
 
-    if not match:
+    if match == None:
       match = Match()
       match.match = form.match.data
       match.event = form.event.data
