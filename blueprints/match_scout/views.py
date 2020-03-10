@@ -53,6 +53,7 @@ def add_match_report(team_number):
       match.event = form.event.data
       
       db.session.add(match)
+      db.session.commit()
       print(match)
 
     match_report = MatchReport()
