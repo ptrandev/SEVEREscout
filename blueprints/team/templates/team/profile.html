@@ -311,6 +311,7 @@
   {% endif %}
 </div>
 
+{% if team_photos %}
 <script src="{{url_for('static', filename='js/galleria.min.js')}}"></script>
 <script src="{{url_for('static', filename='js/galleria.azur.min.js')}}"></script>
 
@@ -324,5 +325,6 @@
       });
   }());
 </script>
+{% endif %}
 
 {% endblock %}
