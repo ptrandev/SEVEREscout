@@ -11,12 +11,18 @@ from authlib.client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
 
+from flask_compress import Compress
+from flask_minify import minify
+
 template_folder = "templates"
 static_folder = "static"
 
 sass.compile(dirname=('static/scss/main/', 'static/css/'))
 
 app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
+Compress(app)
+minify(app=app, html=True, js=True, cssless=True)
+
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
