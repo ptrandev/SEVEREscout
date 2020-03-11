@@ -84,11 +84,17 @@ def add_match_report(team_number):
     # hang
     match_report.hang_able = form.hang_able.data
     match_report.hang_level = form.hang_level.data
-    match_report.hang_position = form.hang_position.data
     match_report.hang_active = form.hang_active.data
+    if form.hang_position.data == "":
+      match_report.hang_position = None
+    else:
+      match_report.hang_position = form.hang_position.data
 
     # defense
-    match_report.defense_performance = form.defense_performance.data
+    if form.defense_performance.data == "":
+      match_report.defense_performance = None
+    else:
+      match_report.defense_performance = form.defense_performance.data
     match_report.defense_penalties = form.defense_penalities.data
 
     # comms
@@ -286,11 +292,15 @@ def delete_match_report(match_report_id):
     return(redirect(url_for("google_auth.login")))
 
   # get match report info from db
-  match_report = MatchReport.query.filter(MatchReport.id == match_report_id).join(Match).first()
-  
+  match_report = MatchReport.query.filter(MatchReport.id == match_report_id).first()
+
+  team_number = match_report.team.team_number
+
   db.session.delete(match_report)
   db.session.commit()
-  
+
+  generateTeamStats(team_number)
+
   return(redirect(url_for("match_scout.all_matches")))
 
 def generateTeamStats(team_number):
@@ -373,7 +383,9 @@ def generateTeamStats(team_number):
 
     num_match_reports = MatchReport.query.filter_by(team_id=team.id).count()
 
-    team_stats.num_matches = num_match_reports
+    team_stats.num_matches = int(num_match_reports)
+
+    print(team_stats.num_matches)
 
     for match_report in match_reports:
       team_stats.auto_points += match_report.auto_points
@@ -399,6 +411,7 @@ def generateTeamStats(team_number):
       team_stats.teleop_success_rate = 0.0
     else:
       team_stats.teleop_success_rate = round(team_stats.teleop_successful_attempts / team_stats.teleop_attempts, 4)
+
     team_stats.auto_points_avg = round(team_stats.auto_points / team_stats.num_matches, 4)
     team_stats.teleop_points_avg = round(team_stats.teleop_points / team_stats.num_matches, 4)
     team_stats.teleop_score_bottom_avg = round(team_stats.teleop_score_bottom / team_stats.num_matches, 4)
@@ -415,3 +428,9 @@ def generateTeamStats(team_number):
       db.session.add(team_stats)
 
     db.session.commit()
+  else:
+    team_stats = TeamStats.query.filter(TeamStats.team_id==team.id).first()
+
+    if team_stats:
+      db.session.delete(team_stats)
+      db.session.commit()

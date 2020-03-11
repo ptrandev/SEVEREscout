@@ -19,7 +19,9 @@ sass.compile(dirname=('static/scss/main/', 'static/css/'))
 app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://phillip:phillip@localhost:5432/severescout"
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 

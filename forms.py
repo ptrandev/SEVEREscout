@@ -56,7 +56,7 @@ class PitReportForm(FlaskForm):
   # hang
   hang_able = BooleanField("Able")
   hang_level = BooleanField("Level")
-  hang_prefered_position = SelectMultipleField("Prefered Position", choices=[("Left End", "Left End"), ("Left", "Left"), ("Center", "Center"), ("Right", "Right"), ("Right End", "Right End")])
+  hang_prefered_position = SelectMultipleField("Prefered Position", choices=[("", "N/A"), ("Left End", "Left End"), ("Left", "Left"), ("Center", "Center"), ("Right", "Right"), ("Right End", "Right End")])
   hang_consistency = SelectField("Consistency", choices=[(0,"N/A"), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], coerce=int)
   hang_time = FloatField("Time", validators=([Optional()]))
   hang_active = BooleanField("Active")
@@ -95,10 +95,10 @@ class MatchReportForm(FlaskForm):
   # hang
   hang_able = BooleanField("Able")
   hang_level = BooleanField("Level")
-  hang_position = SelectField("Position", choices=[("Left End", "Left End"), ("Left", "Left"), ("Center", "Center"), ("Right", "Right"), ("Right End", "Right End")])
+  hang_position = SelectField("Position", choices=[("", "N/A"), ("Left End", "Left End"), ("Left", "Left"), ("Center", "Center"), ("Right", "Right"), ("Right End", "Right End")])
   hang_active = BooleanField("Active")
   # defense
-  defense_performance = SelectField("Performance (1-5)", choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], coerce=int) 
+  defense_performance = SelectField("Performance (1-5)", choices=[(0,"N/A"), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5)], coerce=int)
   defense_penalities = IntegerField("Penalites", widget=NumberInput(), validators=([NumberRange(min=0)]), default=0)
   # comms
   connection_issues = BooleanField("Connection Issues")
